@@ -1,16 +1,16 @@
 /// Developer tuning for the simplified educational motor model.
 abstract final class GamePhysicsConfig {
   /// Larger inertia makes the rotor take longer to speed up or slow down.
-  static const double rotorInertia = 0.13;
+  static const double rotorInertia = 0.3;
 
   /// Larger torque makes acceleration and braking stronger.
   static const double maxElectromagneticTorque = 0.7;
 
   /// Larger viscous friction removes more speed as RPM rises.
-  static const double viscousFriction = 0.0018;
+  static const double viscousFriction = 0.018;
 
   /// Larger Coulomb friction makes low-speed coasting shorter.
-  static const double coulombFriction = 0.012;
+  static const double coulombFriction = 0.12;
 
   /// Raise this to make the simulation run faster than real elapsed time.
   static const double simulationTimeScale = 1.0;
