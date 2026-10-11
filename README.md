@@ -76,6 +76,11 @@ deceleration and reversal; drag; angle wrapping; and frame-rate consistency.
 The included GitHub Actions workflow runs analysis/tests, builds Flutter Web,
 and deploys `build/web` to GitHub Pages on pushes to `main`.
 
+The app, browser tab, Apple touch icon, and web manifest all use
+[`web/favicon.png`](web/favicon.png). The SVG remains an editable design source
+but is not loaded by the app. If you edit the logo, update the PNG to publish
+the change.
+
 The source is in [JoaoPedra-AMDG/FOC-game](https://github.com/JoaoPedra-AMDG/FOC-game).
 GitHub Pages is built by the included workflow on pushes to `main`. Its URL is
 `https://joaopedra-amdg.github.io/FOC-game/`. The currently hosted Sites version
