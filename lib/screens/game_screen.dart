@@ -135,7 +135,7 @@ class _SpeedReadout extends StatelessWidget {
             Text(
               'TORQUE  ${torque >= 0 ? '+' : ''}${(torque * 100).round()}%',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: torque >= 0 ? GameColors.mint : GameColors.coral,
+                color: torque >= 0 ? const Color.fromARGB(255, 46, 161, 50) : GameColors.coral,
                 fontWeight: FontWeight.w800,
               ),
             ),
