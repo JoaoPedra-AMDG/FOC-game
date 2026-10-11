@@ -4,10 +4,10 @@ abstract final class GamePhysicsConfig {
   static const double rotorInertia = 0.3;
 
   /// Larger torque makes acceleration and braking stronger.
-  static const double maxElectromagneticTorque = 0.7;
+  static const double maxElectromagneticTorque = 1;
 
   /// Larger viscous friction removes more speed as RPM rises.
-  static const double viscousFriction = 0.018;
+  static const double viscousFriction = 0.01;
 
   /// Larger Coulomb friction makes low-speed coasting shorter.
   static const double coulombFriction = 0.2;
