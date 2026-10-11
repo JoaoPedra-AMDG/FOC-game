@@ -7,10 +7,10 @@ abstract final class GamePhysicsConfig {
   static const double maxElectromagneticTorque = 0.7;
 
   /// Larger viscous friction removes more speed as RPM rises.
-  static const double viscousFriction = 0.018;
+  static const double viscousFriction = 0.18;
 
   /// Larger Coulomb friction makes low-speed coasting shorter.
-  static const double coulombFriction = 0.12;
+  static const double coulombFriction = 0.2;
 
   /// Raise this to make the simulation run faster than real elapsed time.
   static const double simulationTimeScale = 1.0;
