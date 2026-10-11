@@ -6,13 +6,13 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "web"
-INK = "#08151D"
-PANEL = "#112630"
-LINE = "#31515C"
-MINT = "#63E6C4"
-CORAL = "#FF8D70"
-GOLD = "#FFD36D"
-CREAM = "#F8F1DF"
+INK = "#FAF8EF"
+PANEL = "#EEE4DA"
+LINE = "#BBADA0"
+MINT = "#AD5732"
+CORAL = "#C94F38"
+GOLD = "#936B0A"
+CREAM = "#776E65"
 
 
 def _font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -32,7 +32,7 @@ def icon(size: int, destination: Path) -> None:
     def box(x0: float, y0: float, x1: float, y1: float) -> tuple[int, ...]:
         return tuple(round(value * unit) for value in (x0, y0, x1, y1))
 
-    draw.rounded_rectangle(box(2, 2, 126, 126), radius=round(27 * unit), fill=INK)
+    draw.rounded_rectangle(box(2, 2, 126, 126), radius=round(16 * unit), fill=INK)
     draw.ellipse(box(12, 12, 116, 116), outline=MINT, width=round(3.5 * unit))
     draw.ellipse(box(18, 18, 110, 110), outline=LINE, width=round(2.5 * unit))
 

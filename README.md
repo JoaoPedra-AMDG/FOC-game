@@ -6,9 +6,15 @@ build speed; drift behind and the same field can brake or reverse the rotor. A
 25-second run scores the highest **absolute** motor RPM.
 
 The game deliberately uses a small educational model, not a complete PMSM or
-field-oriented control simulation. The kart circles a fixed track using a
+field-oriented control simulation. The kart follows an oval track using a
 signed-speed visual: reverse motor RPM moves it counterclockwise. It does not
 claim a real vehicle speed.
+
+The oval and top-down kart icon are drawn in
+[lib/widgets/kart_track.dart](lib/widgets/kart_track.dart). The warm beige,
+brown, and tile-like styling takes visual inspiration from the
+[open-source 2048 Android port](https://github.com/uberspot/2048-android)
+and its bundled original 2048 game.
 
 ## Run locally
 

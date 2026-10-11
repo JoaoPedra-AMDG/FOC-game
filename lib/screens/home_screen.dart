@@ -130,12 +130,12 @@ class _HintPill extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
     decoration: BoxDecoration(
-      color: GameColors.ink.withValues(alpha: 0.86),
-      borderRadius: BorderRadius.circular(20),
+      color: GameColors.ink.withValues(alpha: 0.94),
+      borderRadius: BorderRadius.circular(6),
       border: Border.all(color: GameColors.line),
     ),
     child: const Text(
-      'DRAG THE MINT ARROW',
+      'DRAG THE ORANGE ARROW',
       style: TextStyle(
         color: GameColors.mint,
         fontSize: 10,

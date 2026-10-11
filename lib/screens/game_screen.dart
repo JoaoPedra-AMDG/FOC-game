@@ -69,7 +69,7 @@ class GameScreen extends StatelessWidget {
                           const SizedBox(height: 7),
                           Text(
                             controller.phase == GamePhase.countdown
-                                ? 'Get ready — drag the mint field arrow'
+                                ? 'Get ready — drag the orange field arrow'
                                 : 'Drag around the motor · Aim 90° ahead of the rotor',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -191,8 +191,8 @@ class _MotorControl extends StatelessWidget {
                       vertical: 14,
                     ),
                     decoration: BoxDecoration(
-                      color: GameColors.ink.withValues(alpha: 0.9),
-                      borderRadius: BorderRadius.circular(24),
+                      color: GameColors.ink.withValues(alpha: 0.94),
+                      borderRadius: BorderRadius.circular(6),
                       border: Border.all(color: GameColors.mint),
                     ),
                     child: Text(

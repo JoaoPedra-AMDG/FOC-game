@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 
 abstract final class GameColors {
-  static const ink = Color(0xFF08151D);
-  static const panel = Color(0xFF112630);
-  static const raised = Color(0xFF1A3540);
-  static const line = Color(0xFF31515C);
-  static const cream = Color(0xFFF8F1DF);
-  static const muted = Color(0xFFA8C2C7);
-  static const mint = Color(0xFF63E6C4);
-  static const coral = Color(0xFFFF8D70);
-  static const gold = Color(0xFFFFD36D);
+  // Warm board and tile tones from the original 2048 visual language.
+  static const ink = Color(0xFFFAF8EF);
+  static const panel = Color(0xFFEEE4DA);
+  static const raised = Color(0xFFDDD0C2);
+  static const line = Color(0xFFBBADA0);
+  static const cream = Color(0xFF776E65);
+  static const muted = Color(0xFF8F7A66);
+  static const mint = Color(0xFFAD5732);
+  static const coral = Color(0xFFC94F38);
+  static const gold = Color(0xFF936B0A);
+  static const button = Color(0xFF8F7A66);
+  static const road = Color(0xFF42403E);
+  static const curbRed = Color(0xFFD65045);
 }
 
 ThemeData gameTheme() {
   final scheme = ColorScheme.fromSeed(
     seedColor: GameColors.mint,
-    brightness: Brightness.dark,
+    brightness: Brightness.light,
   ).copyWith(
     primary: GameColors.mint,
     onPrimary: GameColors.ink,
@@ -38,16 +42,16 @@ ThemeData gameTheme() {
       color: GameColors.panel,
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(6),
         side: const BorderSide(color: GameColors.line),
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: GameColors.mint,
+        backgroundColor: GameColors.button,
         foregroundColor: GameColors.ink,
         minimumSize: const Size(0, 54),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
       ),
     ),
@@ -56,14 +60,14 @@ ThemeData gameTheme() {
         foregroundColor: GameColors.cream,
         side: const BorderSide(color: GameColors.line),
         minimumSize: const Size(0, 50),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: GameColors.raised,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(6),
         borderSide: const BorderSide(color: GameColors.line),
       ),
     ),

@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <rect x="2" y="2" width="124" height="124" rx="27" fill="#08151d"/>
-  <circle cx="64" cy="64" r="52" fill="none" stroke="#63e6c4" stroke-width="3.5"/>
-  <circle cx="64" cy="64" r="46" fill="none" stroke="#31515c" stroke-width="2.5"/>
+  <rect x="2" y="2" width="124" height="124" rx="16" fill="#faf8ef"/>
+  <circle cx="64" cy="64" r="52" fill="none" stroke="#ad5732" stroke-width="3.5"/>
+  <circle cx="64" cy="64" r="46" fill="none" stroke="#bbada0" stroke-width="2.5"/>
   <defs>
     <g id="coil">
-      <rect x="50" y="12" width="28" height="29" rx="5" fill="#112630" stroke="#ffd36d" stroke-width="2.5"/>
-      <path d="M47 17h34M47 24h34M47 31h34M47 38h34" fill="none" stroke="#f8f1df" stroke-width="2.5" stroke-linecap="round"/>
+      <rect x="50" y="12" width="28" height="29" rx="5" fill="#eee4da" stroke="#936b0a" stroke-width="2.5"/>
+      <path d="M47 17h34M47 24h34M47 31h34M47 38h34" fill="none" stroke="#776e65" stroke-width="2.5" stroke-linecap="round"/>
     </g>
   </defs>
   <use href="#coil"/>
   <use href="#coil" transform="rotate(120 64 64)"/>
   <use href="#coil" transform="rotate(240 64 64)"/>
-  <circle cx="64" cy="64" r="21" fill="#112630" stroke="#63e6c4" stroke-width="3"/>
-  <path d="M64 46v36" stroke="#f8f1df" stroke-width="2"/>
-  <text x="50" y="70" fill="#ff8d70" font-family="Arial,sans-serif" font-size="14" font-weight="bold">N</text>
-  <text x="69" y="70" fill="#ffd36d" font-family="Arial,sans-serif" font-size="14" font-weight="bold">S</text>
+  <circle cx="64" cy="64" r="21" fill="#eee4da" stroke="#ad5732" stroke-width="3"/>
+  <path d="M64 46v36" stroke="#776e65" stroke-width="2"/>
+  <text x="50" y="70" fill="#c94f38" font-family="Arial,sans-serif" font-size="14" font-weight="bold">N</text>
+  <text x="69" y="70" fill="#936b0a" font-family="Arial,sans-serif" font-size="14" font-weight="bold">S</text>
 </svg>

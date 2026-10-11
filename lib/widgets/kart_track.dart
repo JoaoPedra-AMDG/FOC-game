@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' show PathMetric;
 
 import 'package:flutter/material.dart';
 
@@ -7,14 +8,14 @@ import '../theme/game_theme.dart';
 class KartTrack extends StatelessWidget {
   const KartTrack({super.key, required this.distance, required this.rpm});
 
-  // Signed visual distance: braking and reverse RPM move the kart backwards.
+  // Signed distance lets braking and reverse RPM move the kart backwards.
   final double distance;
   final double rpm;
 
   @override
   Widget build(BuildContext context) => RepaintBoundary(
     child: ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(8),
       child: CustomPaint(
         painter: _KartPainter(distance: distance, rpm: rpm),
         child: const SizedBox.expand(),
@@ -33,70 +34,91 @@ class _KartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawRect(Offset.zero & size, Paint()..color = GameColors.panel);
 
-    final center = Offset(size.width * 0.5, size.height * 0.53);
-    final radius = math.min(size.height * 0.34, size.width * 0.19);
-    const roadWidth = 19.0;
+    final center = Offset(size.width / 2, size.height / 2 + 3);
+    final radius = size.height * 0.28;
+    final halfStraight =
+        (math.min(size.width - 55, size.height * 1.55) - radius * 2) / 2;
+    const roadWidth = 21.0;
+    final path =
+        Path()
+          ..moveTo(center.dx, center.dy - radius)
+          ..lineTo(center.dx + halfStraight, center.dy - radius)
+          ..arcToPoint(
+            Offset(center.dx + halfStraight, center.dy + radius),
+            radius: Radius.circular(radius),
+          )
+          ..lineTo(center.dx - halfStraight, center.dy + radius)
+          ..arcToPoint(
+            Offset(center.dx - halfStraight, center.dy - radius),
+            radius: Radius.circular(radius),
+          )
+          ..close();
+    final metric = path.computeMetrics().first;
 
-    canvas.drawCircle(
-      center,
-      radius,
+    // The alternating outer strip sits behind the dark road, leaving a thin
+    // red-and-white curb on each side like the supplied oval reference.
+    canvas.drawPath(
+      path,
       Paint()
-        ..color = const Color(0xFF29404B)
+        ..color = GameColors.curbRed
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = roadWidth + 7,
+    );
+    _dashPath(
+      canvas,
+      metric,
+      dash: 9,
+      gap: 9,
+      color: GameColors.ink,
+      strokeWidth: roadWidth + 7,
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = GameColors.road
         ..style = PaintingStyle.stroke
         ..strokeWidth = roadWidth,
     );
-    for (final edgeRadius in [radius - roadWidth / 2, radius + roadWidth / 2]) {
-      canvas.drawCircle(
-        center,
-        edgeRadius,
-        Paint()
-          ..color = GameColors.mint.withValues(alpha: 0.52)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.7,
-      );
-    }
-
-    // Fixed lane marks make both the circuit and the kart's direction clear.
-    for (var i = 0; i < 12; i++) {
-      final start = -math.pi / 2 + i * math.pi / 6;
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        start,
-        math.pi / 23,
-        false,
-        Paint()
-          ..color = GameColors.cream.withValues(alpha: 0.65)
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = 1.8,
-      );
-    }
-
-    final startLine = Offset(center.dx, center.dy - radius);
-    canvas.drawLine(
-      Offset(startLine.dx - roadWidth / 2, startLine.dy),
-      Offset(startLine.dx + roadWidth / 2, startLine.dy),
-      Paint()
-        ..color = GameColors.cream
-        ..strokeWidth = 2.5,
-    );
-    canvas.drawCircle(
-      center,
-      radius * 0.36,
-      Paint()..color = GameColors.ink.withValues(alpha: 0.55),
+    _dashPath(
+      canvas,
+      metric,
+      dash: 9,
+      gap: 9,
+      color: GameColors.ink.withValues(alpha: 0.88),
+      strokeWidth: 1.5,
     );
 
-    // Distance is presentation-only. It is wrapped around the circular lane.
-    final angle = -math.pi / 2 + distance / radius;
-    final kartPosition =
-        center + Offset(math.cos(angle), math.sin(angle)) * radius;
+    // A two-column checkerboard crosses the top straight at the lap origin.
+    final startY = center.dy - radius;
+    for (var row = 0; row < 6; row++) {
+      for (var column = 0; column < 2; column++) {
+        canvas.drawRect(
+          Rect.fromLTWH(
+            center.dx - 4 + column * 4,
+            startY - roadWidth / 2 + row * roadWidth / 6,
+            4,
+            roadWidth / 6,
+          ),
+          Paint()
+            ..color = (row + column).isEven ? GameColors.ink : GameColors.road,
+        );
+      }
+    }
+
+    final lapDistance =
+        ((distance + 23) % metric.length + metric.length) % metric.length;
+    final tangent = metric.getTangentForOffset(lapDistance)!;
     canvas.save();
-    canvas.translate(kartPosition.dx, kartPosition.dy);
-    canvas.rotate(angle + math.pi / 2 + (rpm < -1 ? math.pi : 0));
+    canvas.translate(tangent.position.dx, tangent.position.dy);
+    canvas.rotate(
+      math.atan2(tangent.vector.dy, tangent.vector.dx) +
+          math.pi / 2 +
+          (rpm < -1 ? math.pi : 0),
+    );
     _paintKart(canvas);
     canvas.restore();
 
-    _label(canvas, 'CIRCULAR KART TRACK', const Offset(14, 12));
+    _label(canvas, 'OVAL KART TRACK', const Offset(12, 7));
     final direction =
         rpm > 1
             ? 'CLOCKWISE'
@@ -106,52 +128,73 @@ class _KartPainter extends CustomPainter {
     _label(
       canvas,
       direction,
-      Offset(size.width - 14, size.height - 21),
+      Offset(size.width - 12, 7),
       alignRight: true,
-      color: rpm < -1 ? GameColors.coral : GameColors.mint,
+      color: rpm < -1 ? GameColors.coral : GameColors.muted,
     );
   }
 
+  void _dashPath(
+    Canvas canvas,
+    PathMetric metric, {
+    required double dash,
+    required double gap,
+    required Color color,
+    required double strokeWidth,
+  }) {
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth;
+    for (var offset = 0.0; offset < metric.length; offset += dash + gap) {
+      canvas.drawPath(
+        metric.extractPath(offset, math.min(offset + dash, metric.length)),
+        paint,
+      );
+    }
+  }
+
   void _paintKart(Canvas canvas) {
-    final shadow = Paint()..color = GameColors.ink.withValues(alpha: 0.6);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(-9, -13, 18, 26),
-        const Radius.circular(5),
-      ),
-      shadow,
-    );
-    for (final dx in [-10.0, 10.0]) {
-      for (final dy in [-8.0, 8.0]) {
+    // Top-down outline: exposed wheels, curved nose, two frame rails, a
+    // steering wheel and a seat. It stays legible over the road at phone size.
+    final outline =
+        Paint()
+          ..color = GameColors.ink
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.1
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
+    final wheelFill = Paint()..color = GameColors.ink;
+    for (final x in [-10.0, 10.0]) {
+      for (final y in [-7.5, 7.5]) {
         canvas.drawRRect(
           RRect.fromRectAndRadius(
-            Rect.fromCenter(center: Offset(dx, dy), width: 5, height: 7),
-            const Radius.circular(2),
+            Rect.fromCenter(center: Offset(x, y), width: 4, height: 7),
+            const Radius.circular(1.2),
           ),
-          Paint()..color = GameColors.ink,
+          wheelFill,
         );
       }
     }
+    canvas.drawPath(
+      Path()
+        ..moveTo(-7, -8)
+        ..quadraticBezierTo(0, -15, 7, -8)
+        ..moveTo(-7, -9)
+        ..lineTo(-7, 11)
+        ..lineTo(7, 11)
+        ..lineTo(7, -9),
+      outline,
+    );
+    canvas.drawCircle(const Offset(0, -4), 3.1, outline);
+    canvas.drawLine(const Offset(0, -1), const Offset(0, 2), outline);
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(-7, -11, 14, 22),
-        const Radius.circular(4),
+        const Rect.fromLTWH(-4.4, 3, 8.8, 5.2),
+        const Radius.circular(1.5),
       ),
-      Paint()..color = GameColors.coral,
-    );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(-5, -4, 10, 8),
-        const Radius.circular(3),
-      ),
-      Paint()..color = GameColors.gold,
-    );
-    canvas.drawLine(
-      const Offset(-4, -8),
-      const Offset(4, -8),
-      Paint()
-        ..color = GameColors.cream
-        ..strokeWidth = 2,
+      outline,
     );
   }
 
