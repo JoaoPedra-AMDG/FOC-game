@@ -30,15 +30,24 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Torque Chase">
-  <link rel="apple-touch-icon" href="favicon.png">
+  <link rel="apple-touch-icon" id="app-apple-icon">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" id="app-favicon" type="image/png">
 
   <title>Torque Chase · Field Control Game</title>
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" id="app-manifest">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <script>
+    const buildVersion = {{flutter_service_worker_version}};
+    document.getElementById('app-apple-icon').href = `favicon.png?v=${buildVersion}`;
+    document.getElementById('app-favicon').href = `favicon.png?v=${buildVersion}`;
+    document.getElementById('app-manifest').href = `manifest.json?v=${buildVersion}`;
+    const bootstrap = document.createElement('script');
+    bootstrap.src = `flutter_bootstrap.js?v=${buildVersion}`;
+    bootstrap.async = true;
+    document.body.appendChild(bootstrap);
+  </script>
 </body>
 </html>

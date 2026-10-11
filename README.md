@@ -65,7 +65,8 @@ when Supabase is absent or unavailable.
 ```sh
 flutter analyze
 flutter test
-flutter build web --release
+python tool/resize_icons.py
+flutter build web --release --pwa-strategy=none
 ```
 
 The physics tests cover zero, forward and reverse torque; forward acceleration;
@@ -76,10 +77,11 @@ deceleration and reversal; drag; angle wrapping; and frame-rate consistency.
 The included GitHub Actions workflow runs analysis/tests, builds Flutter Web,
 and deploys `build/web` to GitHub Pages on pushes to `main`.
 
-The app, browser tab, Apple touch icon, and web manifest all use
-[`web/favicon.png`](web/favicon.png). The SVG remains an editable design source
-but is not loaded by the app. If you edit the logo, update the PNG to publish
-the change.
+The app, browser tab, and Apple touch icon use
+[`web/favicon.png`](web/favicon.png). The web manifest uses 192px and 512px
+copies made from that PNG. The deployment workflow regenerates both copies
+on every push, so editing only `web/favicon.png` is enough for the live site.
+The SVG remains an editable design source but is not loaded by the app.
 
 The source is in [JoaoPedra-AMDG/FOC-game](https://github.com/JoaoPedra-AMDG/FOC-game).
 GitHub Pages is built by the included workflow on pushes to `main`. Its URL is
@@ -90,9 +92,10 @@ The workflow builds with `--base-href /FOC-game/`. If the repository has a
 different name or uses a custom domain, change that value in
 [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
 
-To update the site later, commit and push to `main`; the workflow redeploys
-it. Set the Supabase variables and rerun the workflow when you are ready to
-enable shared scores.
+To update GitHub Pages later, commit and push to `main`; the workflow
+redeploys after its checks pass. The separate Sites copy does not follow
+GitHub pushes. Set the Supabase variables and rerun the workflow when you
+are ready to enable shared scores.
 
 For a demo-day QR code, generate one using the **final, tested HTTPS URL**, not
 the local development address. For example:

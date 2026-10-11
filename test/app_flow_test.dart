@@ -17,7 +17,8 @@ void main() {
     });
 
     await tester.pumpWidget(const TorqueChaseApp());
-    await tester.scrollUntilVisible(find.text('About us'), 250);
+    await tester.ensureVisible(find.text('About us'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('About us'));
     await tester.pumpAndSettle();
 
@@ -71,7 +72,8 @@ void main() {
     });
 
     await tester.pumpWidget(const TorqueChaseApp());
-    await tester.scrollUntilVisible(find.text('PLAY  ·  25 SECOND RUN'), 180);
+    await tester.ensureVisible(find.text('PLAY  ·  25 SECOND RUN'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('PLAY  ·  25 SECOND RUN'));
     await tester.pump();
     for (var i = 0; i < 58; i++) {
