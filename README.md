@@ -16,6 +16,15 @@ brown, and tile-like styling takes visual inspiration from the
 [open-source 2048 Android port](https://github.com/uberspot/2048-android)
 and its bundled original 2048 game.
 
+## Install the game
+
+Open the GitHub Pages URL in Chrome or Edge and choose **Install app** from the
+browser menu. On Android Chrome, choose **Add to Home screen** if that is the
+option shown. On iPhone or iPad, open the URL in Safari, tap **Share**, then
+**Add to Home Screen**. Embedded in-app browsers may not offer installation,
+so open the link in your device browser first. The app caches a basic offline
+copy, while online visits fetch fresh deployments.
+
 ## Run locally
 
 Install Flutter 3.29.1 or newer, then:

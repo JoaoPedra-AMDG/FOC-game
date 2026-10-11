@@ -30,20 +30,17 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="FOC FAST">
-  <link rel="apple-touch-icon" id="app-apple-icon">
+  <link rel="apple-touch-icon" href="favicon.png">
 
   <!-- Favicon -->
-  <link rel="icon" id="app-favicon" type="image/png">
+  <link rel="icon" href="favicon.png" type="image/png">
 
   <title>FOC FAST · Field Control Game</title>
-  <link rel="manifest" id="app-manifest">
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
   <script>
     const buildVersion = {{flutter_service_worker_version}};
-    document.getElementById('app-apple-icon').href = `favicon.png?v=${buildVersion}`;
-    document.getElementById('app-favicon').href = `favicon.png?v=${buildVersion}`;
-    document.getElementById('app-manifest').href = `manifest.json?v=${buildVersion}`;
     const bootstrap = document.createElement('script');
     bootstrap.src = `flutter_bootstrap.js?v=${buildVersion}`;
     bootstrap.async = true;

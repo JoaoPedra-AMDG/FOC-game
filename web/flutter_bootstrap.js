@@ -1,23 +1,24 @@
 {{flutter_js}}
 {{flutter_build_config}}
 
-// A fresh URL for the compiled app bypasses the old Flutter worker's
-// cache-first response and the browser's normal asset cache on every build.
-const torqueBuildVersion = {{flutter_service_worker_version}};
+// Version the app bundle so browsers see each deployment immediately.
+const focFastBuildVersion = {{flutter_service_worker_version}};
 for (const build of _flutter.buildConfig.builds) {
   if (build.mainJsPath) {
-    build.mainJsPath = `${build.mainJsPath}?v=${torqueBuildVersion}`;
+    build.mainJsPath = `${build.mainJsPath}?v=${focFastBuildVersion}`;
   }
 }
 
-async function startTorqueChase() {
-  // Earlier releases installed Flutter's offline-first worker. Remove only
-  // this app's worker before loading so subsequent visits get fresh assets.
+async function startFocFast() {
   if ('serviceWorker' in navigator) {
     try {
       const appScope = new URL('.', document.baseURI).href;
       const registrations = await navigator.serviceWorker.getRegistrations();
-      const oldWorkers = registrations.filter((item) => item.scope === appScope);
+      const oldWorkers = registrations.filter(
+        (item) =>
+          item.scope === appScope &&
+          new URL(item.active?.scriptURL || appScope).pathname.endsWith('/flutter_service_worker.js'),
+      );
       if (oldWorkers.length > 0) {
         await Promise.all(oldWorkers.map((item) => item.unregister()));
         if (navigator.serviceWorker.controller) {
@@ -25,11 +26,14 @@ async function startTorqueChase() {
           return;
         }
       }
+
+      // Network-first fetching keeps new pushes fresh.
+      await navigator.serviceWorker.register('foc_fast_sw.js', { scope: './' });
     } catch (error) {
-      console.warn('Could not remove the previous app cache worker:', error);
+      console.warn('Could not enable app installation:', error);
     }
   }
   await _flutter.loader.load();
 }
 
-startTorqueChase();
+startFocFast();
