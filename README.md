@@ -1,4 +1,4 @@
-# Torque Chase
+# FOC FAST
 
 A quick Flutter Web game for an Electrical Engineering demonstration. Drag the
 stator-field arrow around a permanent-magnet rotor. Keep it roughly 90° ahead to
@@ -114,7 +114,7 @@ For a demo-day QR code, generate one using the **final, tested HTTPS URL**, not
 the local development address. For example:
 
 ```sh
-npx qrcode -o torque-chase-qr.png https://joaopedra-amdg.github.io/FOC-game/
+npx qrcode -o foc-fast-qr.png https://joaopedra-amdg.github.io/FOC-game/
 ```
 
 Print and test the QR code with a phone before the event.

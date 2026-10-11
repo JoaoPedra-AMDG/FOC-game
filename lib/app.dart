@@ -15,7 +15,7 @@ class TorqueChaseApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-    title: 'Torque Chase',
+    title: 'FOC FAST',
     debugShowCheckedModeBanner: false,
     theme: gameTheme(),
     home: const _AppShell(),

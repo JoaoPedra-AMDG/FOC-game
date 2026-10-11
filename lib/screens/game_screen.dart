@@ -37,7 +37,7 @@ class GameScreen extends StatelessWidget {
                                 icon: const Icon(Icons.arrow_back_rounded),
                               ),
                               Text(
-                                'TORQUE CHASE',
+                                'FOC FAST',
                                 style: Theme.of(context).textTheme.labelLarge,
                               ),
                               const Spacer(),
