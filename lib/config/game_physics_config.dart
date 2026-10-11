@@ -10,7 +10,7 @@ abstract final class GamePhysicsConfig {
   static const double viscousFriction = 0.01;
 
   /// Larger Coulomb friction makes low-speed coasting shorter.
-  static const double coulombFriction = 0.2;
+  static const double coulombFriction = 0.1;
 
   /// Raise this to make the simulation run faster than real elapsed time.
   static const double simulationTimeScale = 1.0;

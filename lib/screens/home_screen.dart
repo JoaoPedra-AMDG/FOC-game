@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../content/home_copy.dart';
 import '../theme/game_theme.dart';
 import '../widgets/motor_painter.dart';
 
@@ -33,13 +34,13 @@ class HomeScreen extends StatelessWidget {
                   Image.asset('web/favicon.png', width: 34, height: 34),
                   const SizedBox(width: 8),
                   Text(
-                    'FOC FAST',
+                    HomeCopy.brand,
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                   if (MediaQuery.sizeOf(context).width > 460) ...[
                     const Spacer(),
                     Text(
-                      'FIELD ORIENTED CONTROL',
+                      HomeCopy.subject,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontSize: 10,
                         letterSpacing: 1,
@@ -50,14 +51,14 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 28),
               Text(
-                'FASTEST WINS',
+                HomeCopy.headline,
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
                   fontSize: MediaQuery.sizeOf(context).width < 380 ? 43 : 53,
                 ),
               ),
               const SizedBox(height: 14),
               Text(
-                'Keep the magnetic field about 90° ahead of the rotor ·  25 SECOND RUN',
+                HomeCopy.introduction,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 22),
@@ -88,9 +89,10 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 18),
               FilledButton.icon(
+                key: const Key('home-play'),
                 onPressed: onPlay,
                 icon: const Icon(Icons.play_arrow_rounded, size: 28),
-                label: const Text('PLAY'),
+                label: const Text(HomeCopy.play),
               ),
               const SizedBox(height: 18),
               Wrap(
@@ -99,17 +101,18 @@ class HomeScreen extends StatelessWidget {
                 runSpacing: 8,
                 children: [
                   _SmallLink(
-                    label: 'How it works',
+                    label: HomeCopy.how,
                     icon: Icons.auto_stories_outlined,
                     onTap: onHow,
                   ),
                   _SmallLink(
-                    label: 'Leaderboard',
+                    label: HomeCopy.leaderboard,
                     icon: Icons.emoji_events_outlined,
                     onTap: onLeaderboard,
                   ),
                   _SmallLink(
-                    label: 'About us',
+                    key: const Key('home-about'),
+                    label: HomeCopy.about,
                     icon: Icons.people_outline,
                     onTap: onAbout,
                   ),
@@ -135,7 +138,7 @@ class _HintPill extends StatelessWidget {
       border: Border.all(color: GameColors.line),
     ),
     child: const Text(
-      'DRAG THE ORANGE ARROW',
+      HomeCopy.hint,
       style: TextStyle(
         color: GameColors.mint,
         fontSize: 10,
@@ -148,6 +151,7 @@ class _HintPill extends StatelessWidget {
 
 class _SmallLink extends StatelessWidget {
   const _SmallLink({
+    super.key,
     required this.label,
     required this.icon,
     required this.onTap,

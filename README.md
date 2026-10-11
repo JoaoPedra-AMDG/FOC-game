@@ -35,6 +35,19 @@ flutter run -d chrome --dart-define=SUPABASE_URL=https://qiihwpffmkotsjausztc.su
 Use the public publishable key only. Never use a secret/service-role key in a web
 build. Build-time defines are embedded in the public JavaScript bundle.
 
+## Edit the wording
+
+Change the landing page text in
+[lib/content/home_copy.dart](lib/content/home_copy.dart). Edit the words between
+quotes on the right of each `=`. Keep the names on the left, quotes, and semicolons.
+Other page text lives in its corresponding file under `lib/screens/`. The app
+tests find controls by stable keys, so changing visible wording does not break
+deployment.
+
+Push to `main` to publish. GitHub Actions runs checks and deploys the site; wait
+for the run to finish, then refresh an already open browser tab. Consecutive
+pushes queue instead of cancelling the earlier run.
+
 ## Tuning the game
 
 Edit [lib/config/game_physics_config.dart](lib/config/game_physics_config.dart).

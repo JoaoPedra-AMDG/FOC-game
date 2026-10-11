@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:torque_chase/app.dart';
 import 'package:torque_chase/game/game_controller.dart';
+import 'package:torque_chase/screens/about_screen.dart';
 import 'package:torque_chase/screens/game_screen.dart';
+import 'package:torque_chase/screens/results_screen.dart';
 import 'package:torque_chase/theme/game_theme.dart';
 
 void main() {
@@ -17,13 +19,13 @@ void main() {
     });
 
     await tester.pumpWidget(const TorqueChaseApp());
-    await tester.ensureVisible(find.text('About us'));
+    await tester.ensureVisible(find.byKey(const Key('home-about')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('About us'));
+    await tester.tap(find.byKey(const Key('home-about')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Joao Pedra'), findsOneWidget);
-    expect(find.text('Oryon Choonoo'), findsOneWidget);
+    expect(find.byType(AboutScreen), findsOneWidget);
+    expect(find.byType(ListTile), findsNWidgets(2));
     expect(tester.takeException(), isNull);
   });
 
@@ -72,16 +74,15 @@ void main() {
     });
 
     await tester.pumpWidget(const TorqueChaseApp());
-    await tester.ensureVisible(find.text('PLAY  ·  25 SECOND RUN'));
+    await tester.ensureVisible(find.byKey(const Key('home-play')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('PLAY  ·  25 SECOND RUN'));
+    await tester.tap(find.byKey(const Key('home-play')));
     await tester.pump();
     for (var i = 0; i < 58; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
 
-    expect(find.text('MAX MOTOR SPEED'), findsOneWidget);
-    expect(find.text('PLAY AGAIN'), findsOneWidget);
+    expect(find.byType(ResultsScreen), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
