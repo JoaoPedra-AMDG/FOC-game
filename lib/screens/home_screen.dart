@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
                   Image.asset('web/favicon.png', width: 34, height: 34),
                   const SizedBox(width: 8),
                   Text(
-                    'TORQUE CHASE',
+                    'Fast as FOC',
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                   if (MediaQuery.sizeOf(context).width > 460) ...[
@@ -50,7 +50,7 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 28),
               Text(
-                'CAN YOU\nCONTROL\nTHE MOTOR?',
+                'CAN YOU\nFOC\nFAST?',
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
                   fontSize: MediaQuery.sizeOf(context).width < 380 ? 43 : 53,
                 ),
