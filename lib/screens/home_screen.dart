@@ -33,13 +33,13 @@ class HomeScreen extends StatelessWidget {
                   Image.asset('web/favicon.png', width: 34, height: 34),
                   const SizedBox(width: 8),
                   Text(
-                    'Fast as FOC',
+                    'FOC FAST',
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                   if (MediaQuery.sizeOf(context).width > 460) ...[
                     const Spacer(),
                     Text(
-                      'FIELD CONTROL GAME',
+                      'FIELD ORIENTED CONTROL',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontSize: 10,
                         letterSpacing: 1,
@@ -50,14 +50,14 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 28),
               Text(
-                'CAN YOU\nFOC\nFAST?',
+                'FASTEST WINS',
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
                   fontSize: MediaQuery.sizeOf(context).width < 380 ? 43 : 53,
                 ),
               ),
               const SizedBox(height: 14),
               Text(
-                'Keep the magnetic field about 90° ahead of the rotor. The faster it spins, the harder it gets.',
+                'Keep the magnetic field about 90° ahead of the rotor ·  25 SECOND RUN',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 22),
