@@ -90,7 +90,7 @@ class HomeScreen extends StatelessWidget {
               FilledButton.icon(
                 onPressed: onPlay,
                 icon: const Icon(Icons.play_arrow_rounded, size: 28),
-                label: const Text('PLAY  ·  25 SECOND RUN'),
+                label: const Text('PLAY'),
               ),
               const SizedBox(height: 18),
               Wrap(
