@@ -30,8 +30,8 @@ class HomeScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.bolt_rounded, color: GameColors.mint),
-                  const SizedBox(width: 6),
+                  Image.asset('web/icons/app-logo.png', width: 34, height: 34),
+                  const SizedBox(width: 8),
                   Text(
                     'TORQUE CHASE',
                     style: Theme.of(context).textTheme.labelLarge,

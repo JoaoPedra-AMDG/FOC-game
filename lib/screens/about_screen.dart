@@ -37,11 +37,7 @@ class AboutScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
             children: [
-              const Icon(
-                Icons.groups_rounded,
-                color: GameColors.mint,
-                size: 54,
-              ),
+              Image.asset('web/icons/app-logo.png', width: 78, height: 78),
               const SizedBox(height: 14),
               Text(
                 'Meet the team',

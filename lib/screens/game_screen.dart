@@ -51,7 +51,7 @@ class GameScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 5),
                           SizedBox(
-                            height: compact ? 65 : 84,
+                            height: compact ? 108 : 124,
                             child: KartTrack(
                               distance: controller.trackDistance,
                               rpm: controller.motor.rpm,

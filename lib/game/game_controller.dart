@@ -87,7 +87,7 @@ class GameController extends ChangeNotifier {
       maxAbsoluteRpm = math.max(maxAbsoluteRpm, motor.rpm.abs());
       _positiveTorqueArea += math.max(0, motor.normalizedTorque) * dt;
       _playSeconds += dt;
-      // Presentation-only mapping. Reverse RPM moves the track backwards.
+      // Presentation-only distance. Reverse RPM moves the kart backwards.
       trackDistance += motor.rpm / 60 * dt * 110;
       if (timeLeft == 0) {
         finish();

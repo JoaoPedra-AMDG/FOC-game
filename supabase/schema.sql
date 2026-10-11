@@ -24,5 +24,6 @@ create policy "Visitors can submit scores"
   to anon
   with check (true);
 
+grant usage on schema public to anon;
 grant select, insert on public.torque_chase_scores to anon;
 grant usage, select on sequence public.torque_chase_scores_id_seq to anon;

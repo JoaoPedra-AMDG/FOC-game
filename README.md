@@ -6,8 +6,8 @@ build speed; drift behind and the same field can brake or reverse the rotor. A
 25-second run scores the highest **absolute** motor RPM.
 
 The game deliberately uses a small educational model, not a complete PMSM or
-field-oriented control simulation. The kart track is a signed-speed visual:
-reverse motor RPM moves the markings in the opposite direction. It does not
+field-oriented control simulation. The kart circles a fixed track using a
+signed-speed visual: reverse motor RPM moves it counterclockwise. It does not
 claim a real vehicle speed.
 
 ## Run locally
@@ -19,10 +19,11 @@ flutter pub get
 flutter run -d chrome
 ```
 
-The game runs without a backend. To include the shared leaderboard locally:
+The shared leaderboard is hosted in the FOC Supabase project. To connect a local
+run to it:
 
 ```sh
-flutter run -d chrome --dart-define=SUPABASE_URL=https://YOUR_PROJECT.supabase.co --dart-define=SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
+flutter run -d chrome --dart-define=SUPABASE_URL=https://qiihwpffmkotsjausztc.supabase.co --dart-define=SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
 ```
 
 Use the public publishable key only. Never use a secret/service-role key in a web
@@ -42,12 +43,11 @@ that same simulated angle; it does not fake rotor movement.
 
 ## Shared leaderboard
 
-1. Create a Supabase project.
-2. Run [supabase/schema.sql](supabase/schema.sql) once in its SQL editor.
-3. Copy the project URL and **publishable** key from Supabase's API
-   settings. Supply them as the two Dart defines above.
-4. For GitHub Pages, add repository **Actions variables** named
-   `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`, then rerun the deploy workflow.
+The table and its policies have been created in the FOC Supabase project.
+[supabase/schema.sql](supabase/schema.sql) records the setup for another project.
+For local runs, copy the **publishable** key from Supabase's API settings and
+supply it as the Dart define above. The GitHub repository has Actions variables
+named `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` for its deployment workflow.
 
 The table validates nicknames and score range, allows anonymous reads and
 inserts, and has no update/delete policy. This is a casual demo leaderboard:
@@ -70,15 +70,12 @@ deceleration and reversal; drag; angle wrapping; and frame-rate consistency.
 The included GitHub Actions workflow runs analysis/tests, builds Flutter Web,
 and deploys `build/web` to GitHub Pages on pushes to `main`.
 
-1. Create a public GitHub repository named `torque-chase`.
-2. From this project directory, initialize Git if needed, set that repository
-   as `origin`, and push `main`.
-3. In the repository's **Settings → Pages**, choose **GitHub Actions** as the
-   build and deployment source.
-4. After the workflow succeeds, open
-   `https://YOUR_GITHUB_USERNAME.github.io/torque-chase/`.
+The source is in [JoaoPedra-AMDG/FOC-game](https://github.com/JoaoPedra-AMDG/FOC-game).
+GitHub Pages is built by the included workflow on pushes to `main`. Its URL is
+`https://joaopedra-amdg.github.io/FOC-game/`. The currently hosted Sites version
+is also available at `https://torque-chase-joao.pretty-mint-6178.chatgpt.site/`.
 
-The workflow builds with `--base-href /torque-chase/`. If the repository has a
+The workflow builds with `--base-href /FOC-game/`. If the repository has a
 different name or uses a custom domain, change that value in
 [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
 
@@ -90,7 +87,7 @@ For a demo-day QR code, generate one using the **final, tested HTTPS URL**, not
 the local development address. For example:
 
 ```sh
-npx qrcode -o torque-chase-qr.png https://YOUR_GITHUB_USERNAME.github.io/torque-chase/
+npx qrcode -o torque-chase-qr.png https://joaopedra-amdg.github.io/FOC-game/
 ```
 
 Print and test the QR code with a phone before the event.
