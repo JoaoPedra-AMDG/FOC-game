@@ -137,15 +137,15 @@ class _HintPill extends StatelessWidget {
       borderRadius: BorderRadius.circular(6),
       border: Border.all(color: GameColors.line),
     ),
-    child: const Text(
-      HomeCopy.hint,
-      style: TextStyle(
-        color: GameColors.mint,
-        fontSize: 10,
-        fontWeight: FontWeight.w800,
-        letterSpacing: 1.1,
-      ),
-    ),
+    //child: const Text(
+    //  HomeCopy.hint,
+    //  style: TextStyle(
+    //    color: GameColors.mint,
+    //    fontSize: 10,
+    //    fontWeight: FontWeight.w800,
+    //    letterSpacing: 1.1,
+    //  ),
+    //),
   );
 }
 

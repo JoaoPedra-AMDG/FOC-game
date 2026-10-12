@@ -118,7 +118,7 @@ class _KartPainter extends CustomPainter {
     _paintKart(canvas);
     canvas.restore();
 
-    _label(canvas, 'OVAL KART TRACK', const Offset(12, 7));
+    //_label(canvas, 'OVAL KART TRACK', const Offset(12, 7));
     final direction =
         rpm > 1
             ? 'CLOCKWISE'

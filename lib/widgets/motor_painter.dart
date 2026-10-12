@@ -24,7 +24,7 @@ class MotorPainter extends CustomPainter {
     final strong = torque > 0.78;
     final glow =
         Paint()
-          ..color = (torque >= 0 ? GameColors.mint : GameColors.coral)
+          ..color = (torque >= 0 ? const Color.fromARGB(255, 83, 173, 50) : GameColors.coral)
               .withValues(alpha: strong ? 0.12 : 0.06)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 28);
     canvas.drawCircle(center, radius * 0.87, glow);
