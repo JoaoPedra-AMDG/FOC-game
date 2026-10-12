@@ -87,7 +87,7 @@ class MotorPainter extends CustomPainter {
       rotorTail,
       rotorTip,
       Paint()
-        ..color = GameColors.muted
+        ..color = GameColors.curbRed
         ..strokeWidth = radius * 0.22
         ..strokeCap = StrokeCap.round,
     );
