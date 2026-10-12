@@ -25,7 +25,7 @@ class MotorPainter extends CustomPainter {
     final glow =
         Paint()
           ..color = (torque >= 0
-                  ? const Color.fromARGB(255, 83, 173, 50)
+                  ? const Color(0xFF789176)
                   : GameColors.coral)
               .withValues(alpha: strong ? 0.12 : 0.06)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 28);
@@ -124,20 +124,20 @@ class MotorPainter extends CustomPainter {
       Paint()
         ..color =
             torque >= 0
-                ? const Color.fromARGB(255, 10, 147, 46)
+                ? const Color(0xFF6E8A72)
                 : GameColors.coral
         ..style = PaintingStyle.stroke
         ..strokeWidth = radius * 0.035
         ..strokeCap = StrokeCap.round,
     );
 
-    final fieldTip = _point(center, radius * 0.69, fieldAngle);
-    final fieldBase = _point(center, radius * 0.15, fieldAngle);
-    final arrowWidth = radius * (strong ? 0.063 : 0.052);
+    final fieldTip = _point(center, radius * 0.5175, fieldAngle);
+    final fieldBase = _point(center, radius * 0.1125, fieldAngle);
+    final arrowWidth = radius * (strong ? 0.04725 : 0.039);
     final outline =
         Paint()
           ..color = GameColors.road
-          ..strokeWidth = arrowWidth + radius * 0.038
+          ..strokeWidth = arrowWidth + radius * 0.0285
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round;
     final fieldPaint =
@@ -146,8 +146,8 @@ class MotorPainter extends CustomPainter {
           ..strokeWidth = arrowWidth
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round;
-    final headA = _point(fieldTip, radius * 0.15, fieldAngle + 2.55);
-    final headB = _point(fieldTip, radius * 0.15, fieldAngle - 2.55);
+    final headA = _point(fieldTip, radius * 0.1125, fieldAngle + 2.55);
+    final headB = _point(fieldTip, radius * 0.1125, fieldAngle - 2.55);
     for (final paint in [outline, fieldPaint]) {
       canvas.drawLine(fieldBase, fieldTip, paint);
       canvas.drawLine(fieldTip, headA, paint);

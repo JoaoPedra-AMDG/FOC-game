@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 
 abstract final class GameColors {
   // Warm board and tile tones from the original 2048 visual language.
-  static const ink = Color(0xFFFAF8EF);
-  static const panel = Color(0xFFEEE4DA);
-  static const raised = Color(0xFFDDD0C2);
-  static const line = Color(0xFFBBADA0);
-  static const cream = Color(0xFF776E65);
-  static const muted = Color(0xFF8F7A66);
-  static const mint = Color(0xFFAD5732);
-  static const coral = Color(0xFFC94F38);
-  static const gold = Color(0xFF936B0A);
-  static const button = Color(0xFF8F7A66);
-  static const road = Color(0xFF42403E);
-  static const curbRed = Color(0xFFD65045);
-  static const rod = Color.fromARGB(255, 205, 206, 206);
-  static const northPole = Color(0xFFE43D39);
-  static const southPole = Color(0xFF2868BD);
-  static const fieldArrow = Color(0xFFFFD21F);
+  static const ink = Color(0xFFF6F4ED);
+  static const panel = Color(0xFFE8E1D8);
+  static const raised = Color(0xFFD8CEC3);
+  static const line = Color(0xFFB8ADA3);
+  static const cream = Color(0xFF706A63);
+  static const muted = Color(0xFF888078);
+  static const mint = Color(0xFF916B56);
+  static const coral = Color(0xFFA66D64);
+  static const gold = Color(0xFF917B50);
+  static const button = Color(0xFF81766C);
+  static const road = Color(0xFF4D4D4B);
+  static const curbRed = Color(0xFFB57E79);
+  static const rod = Color(0xFFBFC1BE);
+  static const northPole = Color(0xFFA85C58);
+  static const southPole = Color(0xFF536F8F);
+  static const fieldArrow = Color(0xFFC4A34F);
 }
 
 ThemeData gameTheme() {
