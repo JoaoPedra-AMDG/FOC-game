@@ -121,7 +121,7 @@ class MotorPainter extends CustomPainter {
     final fieldBase = _point(center, radius * 0.15, fieldAngle);
     final fieldPaint =
         Paint()
-          ..color = GameColors.rod
+          ..color = GameColors.gold
           ..strokeWidth = radius * (strong ? 0.063 : 0.052)
           ..strokeCap = StrokeCap.round;
     canvas.drawLine(fieldBase, fieldTip, fieldPaint);
@@ -129,7 +129,7 @@ class MotorPainter extends CustomPainter {
     final headB = _point(fieldTip, radius * 0.15, fieldAngle - 2.55);
     canvas.drawLine(fieldTip, headA, fieldPaint);
     canvas.drawLine(fieldTip, headB, fieldPaint);
-    canvas.drawCircle(center, radius * 0.07, Paint()..color = GameColors.cream);
+    canvas.drawCircle(center, radius * 0.07, Paint()..color = GameColors.rod);
   }
 
   Offset _point(Offset origin, double length, double angle) => Offset(
