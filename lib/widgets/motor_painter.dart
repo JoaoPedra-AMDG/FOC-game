@@ -87,14 +87,14 @@ class MotorPainter extends CustomPainter {
       rotorTail,
       rotorTip,
       Paint()
-        ..color = GameColors.coral
+        ..color = GameColors.muted
         ..strokeWidth = radius * 0.22
         ..strokeCap = StrokeCap.round,
     );
     canvas.drawCircle(
       rotorTip,
       radius * 0.11,
-      Paint()..color = GameColors.coral,
+      Paint()..color = GameColors.muted,
     );
     canvas.drawCircle(
       rotorTail,
