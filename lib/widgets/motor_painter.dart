@@ -64,7 +64,7 @@ class MotorPainter extends CustomPainter {
           ..color =
               i.isEven
                   ? GameColors.coral.withValues(alpha: 0.7)
-                  : const Color.fromARGB(255, 9, 135, 41).withValues(alpha: 0.75),
+                  : const Color.fromARGB(255, 133, 135, 9).withValues(alpha: 0.75),
       );
       canvas.restore();
     }
