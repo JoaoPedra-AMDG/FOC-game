@@ -64,7 +64,7 @@ class MotorPainter extends CustomPainter {
           ..color =
               i.isEven
                   ? GameColors.coral.withValues(alpha: 0.7)
-                  : const Color.fromARGB(255, 133, 135, 9).withValues(alpha: 0.75),
+                  : GameColors.muted.withValues(alpha: 0.75),
       );
       canvas.restore();
     }
@@ -94,7 +94,7 @@ class MotorPainter extends CustomPainter {
     canvas.drawCircle(
       rotorTip,
       radius * 0.11,
-      Paint()..color = GameColors.muted,
+      Paint()..color = GameColors.coral,
     );
     canvas.drawCircle(
       rotorTail,
