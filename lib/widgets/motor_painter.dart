@@ -121,7 +121,7 @@ class MotorPainter extends CustomPainter {
     final fieldBase = _point(center, radius * 0.15, fieldAngle);
     final fieldPaint =
         Paint()
-          ..color = GameColors.cream
+          ..color = GameColors.rod
           ..strokeWidth = radius * (strong ? 0.063 : 0.052)
           ..strokeCap = StrokeCap.round;
     canvas.drawLine(fieldBase, fieldTip, fieldPaint);

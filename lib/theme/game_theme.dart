@@ -14,6 +14,7 @@ abstract final class GameColors {
   static const button = Color(0xFF8F7A66);
   static const road = Color(0xFF42403E);
   static const curbRed = Color(0xFFD65045);
+  static const rod = Color.fromARGB(255, 205, 206, 206);
 }
 
 ThemeData gameTheme() {
