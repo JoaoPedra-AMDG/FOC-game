@@ -78,11 +78,11 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const Positioned(
-                        left: 18,
-                        bottom: 14,
-                        child: _HintPill(),
-                      ),
+                      //const Positioned(
+                      //  left: 18,
+                      //  bottom: 14,
+                      //  child: _HintPill(),
+                      //),
                     ],
                   ),
                 ),
@@ -126,17 +126,17 @@ class HomeScreen extends StatelessWidget {
   );
 }
 
-class _HintPill extends StatelessWidget {
-  const _HintPill();
+//class _HintPill extends StatelessWidget {
+  //const _HintPill();
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-    decoration: BoxDecoration(
-      color: GameColors.ink.withValues(alpha: 0.94),
-      borderRadius: BorderRadius.circular(6),
-      border: Border.all(color: GameColors.line),
-    ),
+  //Widget build(BuildContext context) => Container(
+  //  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+  //  decoration: BoxDecoration(
+  //    color: GameColors.ink.withValues(alpha: 0.94),
+  //    borderRadius: BorderRadius.circular(6),
+  //    border: Border.all(color: GameColors.line),
+  //  ),
     //child: const Text(
     //  HomeCopy.hint,
     //  style: TextStyle(
@@ -146,8 +146,8 @@ class _HintPill extends StatelessWidget {
     //    letterSpacing: 1.1,
     //  ),
     //),
-  );
-}
+  //);
+//}
 
 class _SmallLink extends StatelessWidget {
   const _SmallLink({
