@@ -25,7 +25,7 @@ class MotorPainter extends CustomPainter {
     final glow =
         Paint()
           ..color = (torque >= 0
-                  ? const Color(0xFF789176)
+                  ? const Color(0xFF7FA391)
                   : GameColors.coral)
               .withValues(alpha: strong ? 0.12 : 0.06)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 28);
@@ -124,7 +124,7 @@ class MotorPainter extends CustomPainter {
       Paint()
         ..color =
             torque >= 0
-                ? const Color(0xFF6E8A72)
+                ? const Color(0xFF8FAC99)
                 : GameColors.coral
         ..style = PaintingStyle.stroke
         ..strokeWidth = radius * 0.035

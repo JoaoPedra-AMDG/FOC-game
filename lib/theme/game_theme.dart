@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 
 abstract final class GameColors {
-  // Warm board and tile tones from the original 2048 visual language.
-  static const ink = Color(0xFFF6F4ED);
-  static const panel = Color(0xFFE8E1D8);
-  static const raised = Color(0xFFD8CEC3);
-  static const line = Color(0xFFB8ADA3);
-  static const cream = Color(0xFF706A63);
-  static const muted = Color(0xFF888078);
-  static const mint = Color(0xFF916B56);
-  static const coral = Color(0xFFA66D64);
-  static const gold = Color(0xFF917B50);
-  static const button = Color(0xFF81766C);
-  static const road = Color(0xFF4D4D4B);
-  static const curbRed = Color(0xFFB57E79);
-  static const rod = Color(0xFFBFC1BE);
-  static const northPole = Color(0xFFA85C58);
-  static const southPole = Color(0xFF536F8F);
-  static const fieldArrow = Color(0xFFC4A34F);
+  // Lofi Cafe inspired twilight tones, applied to the existing layout.
+  static const ink = Color(0xFF262643);
+  static const panel = Color(0xFF393450);
+  static const raised = Color(0xFF4B4260);
+  static const line = Color(0xFF746582);
+  static const cream = Color(0xFFF9E6D0);
+  static const muted = Color(0xFFC4AFC7);
+  static const mint = Color(0xFFB88BB8);
+  static const coral = Color(0xFFBC7E7D);
+  static const gold = Color(0xFFD4B16F);
+  static const button = Color(0xFFB88BB8);
+  static const road = Color(0xFF17192E);
+  static const curbRed = Color(0xFFAA7476);
+  static const rod = Color(0xFF9788A4);
+  static const northPole = Color(0xFFBC7E7D);
+  static const southPole = Color(0xFF6D8CAD);
+  static const fieldArrow = Color(0xFFD4B16F);
 }
 
 ThemeData gameTheme() {
   final scheme = ColorScheme.fromSeed(
     seedColor: GameColors.mint,
-    brightness: Brightness.light,
+    brightness: Brightness.dark,
   ).copyWith(
     primary: GameColors.mint,
     onPrimary: GameColors.ink,
