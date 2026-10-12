@@ -2,7 +2,7 @@ name: Deploy Flutter Web
 
 on:
   push:
-    branches: [main]
+    branches: [main, codex/lofi-cafe-palette]
   workflow_dispatch:
 
 permissions:
@@ -18,31 +18,64 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out main site
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main_site
+      - name: Check out Lofi site
+        uses: actions/checkout@v4
+        with:
+          ref: codex/lofi-cafe-palette
+          path: lofi_site
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: pip
-          cache-dependency-path: tool/requirements.txt
-      - run: python -m pip install -r tool/requirements.txt
+          cache-dependency-path: main_site/tool/requirements.txt
+      - run: python -m pip install -r main_site/tool/requirements.txt
       - run: python tool/resize_icons.py
+        working-directory: main_site
+      - run: python tool/resize_icons.py
+        working-directory: lofi_site
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: '3.29.1'
           cache: true
       - run: flutter pub get
+        working-directory: main_site
       - run: flutter analyze
+        working-directory: main_site
       - run: flutter test
-      - name: Build site
+        working-directory: main_site
+      - name: Build main site
+        working-directory: main_site
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
         run: flutter build web --release --pwa-strategy=none --base-href "/FOC-game/" --dart-define="SUPABASE_URL=$SUPABASE_URL" --dart-define="SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY"
+      - run: flutter pub get
+        working-directory: lofi_site
+      - run: flutter analyze
+        working-directory: lofi_site
+      - run: flutter test
+        working-directory: lofi_site
+      - name: Build Lofi site
+        working-directory: lofi_site
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+        run: flutter build web --release --pwa-strategy=none --base-href "/FOC-game/lofi/" --dart-define="SUPABASE_URL=$SUPABASE_URL" --dart-define="SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY"
+      - name: Assemble both sites
+        run: |
+          mkdir -p pages_artifact/lofi
+          cp -a main_site/build/web/. pages_artifact/
+          cp -a lofi_site/build/web/. pages_artifact/lofi/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: build/web
+          path: pages_artifact
   deploy:
     environment:
       name: github-pages

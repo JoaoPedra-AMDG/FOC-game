@@ -53,9 +53,13 @@ Other page text lives in its corresponding file under `lib/screens/`. The app
 tests find controls by stable keys, so changing visible wording does not break
 deployment.
 
-Push to `main` to publish. GitHub Actions runs checks and deploys the site; wait
-for the run to finish, then refresh an already open browser tab. Consecutive
-pushes queue instead of cancelling the earlier run.
+Push to `main` to publish the original version at
+https://joaopedra-amdg.github.io/FOC-game/. Push to
+`codex/lofi-cafe-palette` to publish the Lofi version at
+https://joaopedra-amdg.github.io/FOC-game/lofi/. GitHub Actions checks and
+rebuilds both sites after either branch changes. Wait for the deployment to
+finish, then refresh an already open browser tab. Both versions use the same
+Supabase leaderboard.
 
 ## Tuning the game
 
@@ -96,8 +100,9 @@ deceleration and reversal; drag; angle wrapping; and frame-rate consistency.
 
 ## Repository and hosting
 
-The included GitHub Actions workflow runs analysis/tests, builds Flutter Web,
-and deploys `build/web` to GitHub Pages on pushes to `main`.
+The included GitHub Actions workflow runs analysis/tests for both branches,
+builds Flutter Web twice with separate base paths, and deploys them together
+to GitHub Pages on pushes to either branch.
 
 The app, browser tab, and Apple touch icon use
 [`web/favicon.png`](web/favicon.png). The web manifest uses 192px and 512px
