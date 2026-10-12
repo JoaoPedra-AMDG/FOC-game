@@ -56,9 +56,11 @@ deployment.
 Push to `main` to publish the original version at
 https://joaopedra-amdg.github.io/FOC-game/. Push to
 `codex/lofi-cafe-palette` to publish the Lofi version at
-https://joaopedra-amdg.github.io/FOC-game/lofi/. GitHub Actions checks and
-rebuilds both sites after either branch changes. Wait for the deployment to
-finish, then refresh an already open browser tab. Both versions use the same
+https://joaopedra-amdg.github.io/FOC-game/lofi/. Push to
+`codex/clash-royale-style` to publish the arena version at
+https://joaopedra-amdg.github.io/FOC-game/royale/. GitHub Actions checks and
+rebuilds all three sites after any branch changes. Wait for the deployment to
+finish, then refresh an already open browser tab. All versions use the same
 Supabase leaderboard.
 
 ## Tuning the game
@@ -100,9 +102,9 @@ deceleration and reversal; drag; angle wrapping; and frame-rate consistency.
 
 ## Repository and hosting
 
-The included GitHub Actions workflow runs analysis/tests for both branches,
-builds Flutter Web twice with separate base paths, and deploys them together
-to GitHub Pages on pushes to either branch.
+The included GitHub Actions workflow runs analysis/tests for all three branches,
+builds Flutter Web with separate base paths, and deploys them together
+to GitHub Pages on pushes to any of the branches.
 
 The app, browser tab, and Apple touch icon use
 [`web/favicon.png`](web/favicon.png). The web manifest uses 192px and 512px
