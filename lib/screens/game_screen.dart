@@ -137,7 +137,7 @@ class _SpeedReadout extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color:
                     torque >= 0
-                        ? const Color(0xFF8FAC99)
+                        ? const Color(0xFF75D8AC)
                         : GameColors.coral,
                 fontWeight: FontWeight.w800,
               ),
