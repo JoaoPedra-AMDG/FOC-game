@@ -111,7 +111,7 @@ class MotorPainter extends CustomPainter {
       torqueAngle,
       false,
       Paint()
-        ..color = torque >= 0 ? GameColors.gold : GameColors.coral
+        ..color = torque >= 0 ? const Color.fromARGB(255, 10, 147, 46) : GameColors.coral
         ..style = PaintingStyle.stroke
         ..strokeWidth = radius * 0.035
         ..strokeCap = StrokeCap.round,
