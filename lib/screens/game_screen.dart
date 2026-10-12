@@ -69,7 +69,7 @@ class GameScreen extends StatelessWidget {
                           const SizedBox(height: 7),
                           Text(
                             controller.phase == GamePhase.countdown
-                                ? 'Get ready — drag the orange field arrow'
+                                ? 'Get ready — drag the yellow field arrow'
                                 : 'Drag around the motor · Aim 90° ahead of the rotor',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -135,7 +135,10 @@ class _SpeedReadout extends StatelessWidget {
             Text(
               'TORQUE  ${torque >= 0 ? '+' : ''}${(torque * 100).round()}%',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: torque >= 0 ? const Color.fromARGB(255, 46, 161, 50) : GameColors.coral,
+                color:
+                    torque >= 0
+                        ? const Color.fromARGB(255, 46, 161, 50)
+                        : GameColors.coral,
                 fontWeight: FontWeight.w800,
               ),
             ),

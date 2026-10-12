@@ -24,7 +24,9 @@ class MotorPainter extends CustomPainter {
     final strong = torque > 0.78;
     final glow =
         Paint()
-          ..color = (torque >= 0 ? const Color.fromARGB(255, 83, 173, 50) : GameColors.coral)
+          ..color = (torque >= 0
+                  ? const Color.fromARGB(255, 83, 173, 50)
+                  : GameColors.coral)
               .withValues(alpha: strong ? 0.12 : 0.06)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 28);
     canvas.drawCircle(center, radius * 0.87, glow);
@@ -83,26 +85,35 @@ class MotorPainter extends CustomPainter {
 
     final rotorTip = _point(center, radius * 0.42, rotorAngle);
     final rotorTail = _point(center, radius * 0.42, rotorAngle + math.pi);
-    canvas.drawLine(
-      rotorTail,
-      rotorTip,
-      Paint()
-        ..color = GameColors.curbRed
-        ..strokeWidth = radius * 0.22
-        ..strokeCap = StrokeCap.round,
+    final bar = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        -radius * 0.53,
+        -radius * 0.11,
+        radius * 1.06,
+        radius * 0.22,
+      ),
+      Radius.circular(radius * 0.11),
     );
-    canvas.drawCircle(
-      rotorTip,
-      radius * 0.11,
-      Paint()..color = GameColors.coral,
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.rotate(rotorAngle);
+    canvas.clipRRect(bar);
+    canvas.drawRect(
+      Rect.fromLTWH(
+        -radius * 0.53,
+        -radius * 0.11,
+        radius * 0.53,
+        radius * 0.22,
+      ),
+      Paint()..color = GameColors.southPole,
     );
-    canvas.drawCircle(
-      rotorTail,
-      radius * 0.11,
-      Paint()..color = GameColors.cream,
+    canvas.drawRect(
+      Rect.fromLTWH(0, -radius * 0.11, radius * 0.53, radius * 0.22),
+      Paint()..color = GameColors.northPole,
     );
-    _label(canvas, 'N', rotorTip, radius * 0.12, GameColors.ink);
-    _label(canvas, 'S', rotorTail, radius * 0.12, GameColors.ink);
+    canvas.restore();
+    _label(canvas, 'N', rotorTip, radius * 0.12, Colors.white);
+    _label(canvas, 'S', rotorTail, radius * 0.12, Colors.white);
 
     final arcRadius = radius * 0.60;
     canvas.drawArc(
@@ -111,7 +122,10 @@ class MotorPainter extends CustomPainter {
       torqueAngle,
       false,
       Paint()
-        ..color = torque >= 0 ? const Color.fromARGB(255, 10, 147, 46) : GameColors.coral
+        ..color =
+            torque >= 0
+                ? const Color.fromARGB(255, 10, 147, 46)
+                : GameColors.coral
         ..style = PaintingStyle.stroke
         ..strokeWidth = radius * 0.035
         ..strokeCap = StrokeCap.round,
@@ -119,16 +133,26 @@ class MotorPainter extends CustomPainter {
 
     final fieldTip = _point(center, radius * 0.69, fieldAngle);
     final fieldBase = _point(center, radius * 0.15, fieldAngle);
+    final arrowWidth = radius * (strong ? 0.063 : 0.052);
+    final outline =
+        Paint()
+          ..color = GameColors.road
+          ..strokeWidth = arrowWidth + radius * 0.038
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
     final fieldPaint =
         Paint()
-          ..color = GameColors.gold
-          ..strokeWidth = radius * (strong ? 0.063 : 0.052)
-          ..strokeCap = StrokeCap.round;
-    canvas.drawLine(fieldBase, fieldTip, fieldPaint);
+          ..color = GameColors.fieldArrow
+          ..strokeWidth = arrowWidth
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
     final headA = _point(fieldTip, radius * 0.15, fieldAngle + 2.55);
     final headB = _point(fieldTip, radius * 0.15, fieldAngle - 2.55);
-    canvas.drawLine(fieldTip, headA, fieldPaint);
-    canvas.drawLine(fieldTip, headB, fieldPaint);
+    for (final paint in [outline, fieldPaint]) {
+      canvas.drawLine(fieldBase, fieldTip, paint);
+      canvas.drawLine(fieldTip, headA, paint);
+      canvas.drawLine(fieldTip, headB, paint);
+    }
     canvas.drawCircle(center, radius * 0.07, Paint()..color = GameColors.rod);
   }
 

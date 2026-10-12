@@ -15,6 +15,9 @@ abstract final class GameColors {
   static const road = Color(0xFF42403E);
   static const curbRed = Color(0xFFD65045);
   static const rod = Color.fromARGB(255, 205, 206, 206);
+  static const northPole = Color(0xFFE43D39);
+  static const southPole = Color(0xFF2868BD);
+  static const fieldArrow = Color(0xFFFFD21F);
 }
 
 ThemeData gameTheme() {

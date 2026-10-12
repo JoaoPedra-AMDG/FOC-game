@@ -23,7 +23,7 @@ class HowScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'The rotor contains permanent magnets. Current in the stationary coils makes another magnetic field. Drag the orange arrow to choose where that stator field points.',
+                'The rotor contains permanent magnets. Current in the stationary coils makes another magnetic field. Drag the yellow arrow to choose where that stator field points.',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 20),
