@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../content/home_copy.dart';
-import '../theme/game_theme.dart';
 import '../widgets/motor_painter.dart';
 
 class HomeScreen extends StatelessWidget {
