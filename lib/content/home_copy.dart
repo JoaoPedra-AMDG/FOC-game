@@ -6,7 +6,7 @@ abstract final class HomeCopy {
   static const headline = 'FASTEST WINS';
   static const introduction =
       'Keep the magnetic field 90° ahead of the rotor ·  25 SECOND RUN';
-  static const hint = '';
+  //static const hint = 'hint';
   static const play = 'PLAY';
   static const how = 'How it works';
   static const leaderboard = 'Leaderboard';
