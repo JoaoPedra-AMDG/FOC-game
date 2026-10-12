@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 
 abstract final class GameColors {
-  // Warm board and tile tones from the original 2048 visual language.
-  static const ink = Color(0xFFF6F4ED);
-  static const panel = Color(0xFFE8E1D8);
-  static const raised = Color(0xFFD8CEC3);
-  static const line = Color(0xFFB8ADA3);
-  static const cream = Color(0xFF706A63);
-  static const muted = Color(0xFF888078);
-  static const mint = Color(0xFF916B56);
-  static const coral = Color(0xFFA66D64);
-  static const gold = Color(0xFF917B50);
-  static const button = Color(0xFF81766C);
-  static const road = Color(0xFF4D4D4B);
-  static const curbRed = Color(0xFFB57E79);
-  static const rod = Color(0xFFBFC1BE);
-  static const northPole = Color(0xFFA85C58);
-  static const southPole = Color(0xFF536F8F);
-  static const fieldArrow = Color(0xFFC4A34F);
+  // Original arena styling inspired by the selected Clash Royale concept.
+  static const ink = Color(0xFF1C315D);
+  static const panel = Color(0xFF2F4D82);
+  static const raised = Color(0xFF4265A1);
+  static const line = Color(0xFF7899CB);
+  static const cream = Color(0xFFFFF9E7);
+  static const muted = Color(0xFFD6E3F4);
+  static const mint = Color(0xFFF7D16A);
+  static const coral = Color(0xFFEA8175);
+  static const gold = Color(0xFFFFD976);
+  static const button = Color(0xFFF0BA4B);
+  static const road = Color(0xFF142542);
+  static const curbRed = Color(0xFFE98375);
+  static const rod = Color(0xFFB7C9E2);
+  static const northPole = Color(0xFFE47B70);
+  static const southPole = Color(0xFF76A9DF);
+  static const fieldArrow = Color(0xFFFFDE7E);
 }
 
 ThemeData gameTheme() {
   final scheme = ColorScheme.fromSeed(
     seedColor: GameColors.mint,
-    brightness: Brightness.light,
+    brightness: Brightness.dark,
   ).copyWith(
     primary: GameColors.mint,
     onPrimary: GameColors.ink,
@@ -46,8 +46,8 @@ ThemeData gameTheme() {
       color: GameColors.panel,
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(6),
-        side: const BorderSide(color: GameColors.line),
+        borderRadius: BorderRadius.circular(18),
+        side: const BorderSide(color: GameColors.line, width: 2),
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(
@@ -55,32 +55,37 @@ ThemeData gameTheme() {
         backgroundColor: GameColors.button,
         foregroundColor: GameColors.ink,
         minimumSize: const Size(0, 54),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        elevation: 5,
+        shadowColor: const Color(0xFF8E5C28),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: const BorderSide(color: GameColors.gold, width: 2),
+        ),
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: GameColors.cream,
-        side: const BorderSide(color: GameColors.line),
+        side: const BorderSide(color: GameColors.line, width: 2),
         minimumSize: const Size(0, 50),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: GameColors.raised,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: GameColors.line),
       ),
     ),
     textTheme: const TextTheme(
       displayLarge: TextStyle(
-        fontSize: 54,
+        fontSize: 48,
         height: 0.95,
         fontWeight: FontWeight.w900,
-        letterSpacing: -2,
+        letterSpacing: -1.4,
         color: GameColors.cream,
       ),
       headlineMedium: TextStyle(

@@ -2,13 +2,13 @@
 /// Keep the names on the left unchanged; tests use widget keys instead of text.
 abstract final class HomeCopy {
   static const brand = 'FOC FAST';
-  static const subject = 'FIELD ORIENTED CONTROL';
-  static const headline = 'FASTEST WINS';
-  static const introduction =
-      'Keep the magnetic field 90° ahead of the rotor ·  25 SECOND RUN';
+  static const subject = '25s RUN';
+  static const eyebrow = 'THE MOTOR ARENA';
+  static const headline = 'MASTER THE\nMAGNETIC FIELD';
+  static const introduction = 'Hold your lead. Chase the highest RPM.';
   //static const hint = 'hint';
-  static const play = 'PLAY';
-  static const how = 'How it works';
-  static const leaderboard = 'Leaderboard';
-  static const about = 'About us';
+  static const play = 'BATTLE NOW';
+  static const how = 'HOW TO PLAY';
+  static const leaderboard = 'TOP SCORES';
+  static const about = 'TEAM';
 }
