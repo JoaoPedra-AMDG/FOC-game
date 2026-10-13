@@ -8,6 +8,8 @@ class AboutScreen extends StatelessWidget {
 
   static const projectUrl =
       'https://dsl-masters-interest.netlify.app/projects/group-01/';
+  static const dashboardUrl =
+      'https://oryonchoonoo.github.io/Simulation_Display/';
 
   Future<void> _open(BuildContext context, String name) async {
     final link = Uri.parse('$projectUrl#:~:text=${Uri.encodeComponent(name)}');
@@ -23,6 +25,24 @@ class AboutScreen extends StatelessWidget {
     if (!opened && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Could not open the DSL profile page.')),
+      );
+    }
+  }
+
+  Future<void> _openDashboard(BuildContext context) async {
+    final link = Uri.parse(dashboardUrl);
+    var opened = false;
+    try {
+      opened = await launchUrl(link, webOnlyWindowName: '_blank');
+      if (!opened) {
+        opened = await launchUrl(link, webOnlyWindowName: '_self');
+      }
+    } catch (_) {
+      // Show a useful message if the browser refuses both routes.
+    }
+    if (!opened && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open the full dashboard.')),
       );
     }
   }
@@ -49,6 +69,32 @@ class AboutScreen extends StatelessWidget {
                 'Joao and Oryon are investigating control methods for a permanent magnet synchronous machine. Read their Digital Smart Lab profiles and learn more about the Group 01 project.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 22),
+              Card(
+                key: const Key('about-dashboard'),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 12,
+                  ),
+                  leading: const CircleAvatar(
+                    backgroundColor: GameColors.raised,
+                    child: Icon(
+                      Icons.dashboard_customize_rounded,
+                      color: GameColors.mint,
+                    ),
+                  ),
+                  title: const Text('Open the full investigation dashboard'),
+                  subtitle: const Text(
+                    'Explore the dynamometer, FOC animations, simulation results and measured comparisons.',
+                  ),
+                  trailing: const Icon(
+                    Icons.open_in_new_rounded,
+                    color: GameColors.mint,
+                  ),
+                  onTap: () => _openDashboard(context),
+                ),
               ),
               const SizedBox(height: 26),
               _ProfileCard(

@@ -25,7 +25,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(AboutScreen), findsOneWidget);
-    expect(find.byType(ListTile), findsNWidgets(2));
+    expect(find.byKey(const Key('about-dashboard')), findsOneWidget);
+    expect(find.byType(ListTile), findsNWidgets(3));
     expect(tester.takeException(), isNull);
   });
 

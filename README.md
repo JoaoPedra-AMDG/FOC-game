@@ -138,5 +138,7 @@ Print and test the QR code with a phone before the event.
 ## About us
 
 The app links to [Joao Pedra and Oryon Choonoo's Group 01 profiles](https://dsl-masters-interest.netlify.app/projects/group-01/)
-on the Digital Smart Lab site. Each link uses a browser text fragment to jump
-to the selected profile where supported.
+on the Digital Smart Lab site. It also links directly to the
+[full investigation dashboard](https://oryonchoonoo.github.io/Simulation_Display/).
+Each profile link uses a browser text fragment to jump to the selected person
+where supported.
