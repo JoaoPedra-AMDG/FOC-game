@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://qiihwpffmkotsjausztc.supabase.co; img-src 'self'; base-uri 'self'; form-action 'none'">
+  <title>FOC FAST · Leaderboard editor</title>
+  <link rel="icon" href="../favicon.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div><p class="eyebrow">FOC FAST / DEVELOPER TOOLS</p><h1>Leaderboard editor</h1><p>Manage the shared scores shown across every game version.</p></div>
+      <a href="../">View game ↗</a>
+    </header>
+    <p id="notice" class="notice" role="status" aria-live="polite"></p>
+    <section id="auth-panel" class="panel auth-panel">
+      <p class="eyebrow">01 / ADMINISTRATOR ACCESS</p>
+      <h2>Sign in</h2>
+      <p>Use your approved university email. Your password goes only to Supabase Auth.</p>
+      <form id="auth-form">
+        <label for="email">Email</label><input id="email" type="email" value="2603341@students.wits.ac.za" autocomplete="username" readonly>
+        <label for="password">Password</label><input id="password" type="password" minlength="6" autocomplete="current-password" required>
+        <div class="actions"><button id="sign-in" type="submit" class="primary">Sign in</button><button id="sign-up" type="button">Create my account</button></div>
+      </form>
+      <p class="help">First visit? Create an account, confirm the email Supabase sends, then return here to sign in. You choose your own password.</p>
+    </section>
+    <section id="admin-panel" hidden>
+      <div class="session-bar"><div><p class="eyebrow">SIGNED IN AS</p><strong id="signed-in-email"></strong></div><button id="sign-out" type="button">Sign out</button></div>
+      <div class="summary" aria-label="Score totals"><div><span id="total-count">—</span><small>Loaded entries</small></div><div><span id="visible-count">—</span><small>Visible</small></div><div><span id="hidden-count">—</span><small>Hidden</small></div></div>
+      <section class="panel">
+        <p class="eyebrow">02 / SCORE DETAILS</p><h2 id="form-title">Add a score</h2><p>Use a nickname of 2–16 letters, numbers, spaces, underscores or hyphens, and a whole RPM value from 0 to 10,000.</p>
+        <form id="score-form"><div class="form-grid"><div><label for="nickname">Nickname</label><input id="nickname" type="text" maxlength="16" minlength="2" pattern="[A-Za-z0-9 _-]+" required></div><div><label for="rpm">Maximum RPM</label><input id="rpm" type="number" min="0" max="10000" step="1" required></div></div><label class="check"><input id="hidden" type="checkbox"> Hide this entry from public leaderboards</label><div class="actions"><button id="save-score" type="submit" class="primary">Add score</button><button id="cancel-edit" type="button" hidden>Cancel edit</button></div></form>
+      </section>
+      <section class="panel"><div class="list-heading"><div><p class="eyebrow">03 / SHARED LEADERBOARD</p><h2>Entries</h2><p>Hide is reversible. Delete permanently removes an entry.</p></div><button id="refresh" type="button">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Nickname</th><th>Max RPM</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead><tbody id="scores-body"></tbody></table></div><p id="empty-state" class="empty" hidden>No entries found.</p><button id="load-more" type="button" hidden>Load more entries</button></section>
+    </section>
+  </main>
+</body>
+</html>

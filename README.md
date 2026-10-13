@@ -85,10 +85,23 @@ For local runs, copy the **publishable** key from Supabase's API settings and
 supply it as the Dart define above. The GitHub repository has Actions variables
 named `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` for its deployment workflow.
 
-The table validates nicknames and score range, allows anonymous reads and
-inserts, and has no update/delete policy. This is a casual demo leaderboard:
-client-submitted scores can still be fabricated. The game remains playable
-when Supabase is absent or unavailable.
+The table validates nicknames and score range. Visitors can read visible scores
+and submit new visible scores; only the confirmed administrator can change or
+delete entries. This is a casual demo leaderboard: client-submitted scores can
+still be fabricated. The game remains playable when Supabase is absent or
+unavailable.
+
+### Leaderboard editor
+
+Open https://joaopedra-amdg.github.io/FOC-game/admin/ to manage the shared
+leaderboard. Only the confirmed Supabase Auth account for
+`2603341@students.wits.ac.za` can add, edit, hide, restore, or delete scores.
+On your first visit, choose **Create my account**, confirm the email Supabase
+sends, then return to sign in with your password. Hidden scores disappear from
+all public leaderboard versions; deleting a score permanently removes it.
+The editor uses the public publishable key and database row security, never a
+service-role key. Its setup is recorded in
+[`supabase/leaderboard_admin.sql`](supabase/leaderboard_admin.sql).
 
 ## Verify
 

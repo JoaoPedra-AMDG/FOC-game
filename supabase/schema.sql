@@ -1,4 +1,5 @@
--- Run this in the Supabase SQL editor for a new project.
+-- Run this in the Supabase SQL editor for a new project, then run
+-- leaderboard_admin.sql to enable the private leaderboard editor.
 create table if not exists public.torque_chase_scores (
   id bigint generated always as identity primary key,
   nickname text not null check (
