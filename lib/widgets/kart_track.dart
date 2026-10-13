@@ -160,12 +160,12 @@ class _KartPainter extends CustomPainter {
     // steering wheel and a seat. It stays legible over the road at phone size.
     final outline =
         Paint()
-          ..color = GameColors.ink
+          ..color = Colors.white
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.1
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round;
-    final wheelFill = Paint()..color = GameColors.ink;
+    final wheelFill = Paint()..color = Colors.white;
     for (final x in [-10.0, 10.0]) {
       for (final y in [-7.5, 7.5]) {
         canvas.drawRRect(
