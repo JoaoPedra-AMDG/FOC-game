@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 
 abstract final class GameColors {
-  // Warm board and tile tones from the original 2048 visual language.
-  static const ink = Color(0xFFF6F4ED);
-  static const panel = Color(0xFFE8E1D8);
-  static const raised = Color(0xFFD8CEC3);
-  static const line = Color(0xFFB8ADA3);
-  static const cream = Color(0xFF706A63);
-  static const muted = Color(0xFF888078);
-  static const mint = Color(0xFF916B56);
-  static const coral = Color(0xFFA66D64);
-  static const gold = Color(0xFF917B50);
-  static const button = Color(0xFF81766C);
-  static const road = Color(0xFF4D4D4B);
-  static const curbRed = Color(0xFFB57E79);
-  static const rod = Color(0xFFBFC1BE);
-  static const northPole = Color(0xFFA85C58);
-  static const southPole = Color(0xFF536F8F);
-  static const fieldArrow = Color(0xFFC4A34F);
+  // Dark instrument-panel palette inspired by the investigation display.
+  static const ink = Color(0xFF0B0B25);
+  static const panel = Color(0xFF1A1D4A);
+  static const raised = Color(0xFF25295E);
+  static const line = Color(0xFF555DA0);
+  static const cream = Color(0xFFF7F5FF);
+  static const muted = Color(0xFFC8CCE6);
+  static const mint = Color(0xFF69D6BC);
+  static const coral = Color(0xFFED80B8);
+  static const gold = Color(0xFFF1A7D4);
+  static const button = Color(0xFFA16BE5);
+  static const road = Color(0xFF10132E);
+  static const curbRed = Color(0xFFDA6CB1);
+  static const rod = Color(0xFF9199CE);
+  static const northPole = Color(0xFFE9789C);
+  static const southPole = Color(0xFF6DADE2);
+  static const fieldArrow = Color(0xFF79E4CF);
 }
 
 ThemeData gameTheme() {
   final scheme = ColorScheme.fromSeed(
     seedColor: GameColors.mint,
-    brightness: Brightness.light,
+    brightness: Brightness.dark,
   ).copyWith(
     primary: GameColors.mint,
     onPrimary: GameColors.ink,
@@ -46,7 +46,7 @@ ThemeData gameTheme() {
       color: GameColors.panel,
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(5),
         side: const BorderSide(color: GameColors.line),
       ),
     ),
@@ -55,7 +55,7 @@ ThemeData gameTheme() {
         backgroundColor: GameColors.button,
         foregroundColor: GameColors.ink,
         minimumSize: const Size(0, 54),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
       ),
     ),
@@ -64,23 +64,23 @@ ThemeData gameTheme() {
         foregroundColor: GameColors.cream,
         side: const BorderSide(color: GameColors.line),
         minimumSize: const Size(0, 50),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: GameColors.raised,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(5),
         borderSide: const BorderSide(color: GameColors.line),
       ),
     ),
     textTheme: const TextTheme(
       displayLarge: TextStyle(
-        fontSize: 54,
+        fontSize: 48,
         height: 0.95,
         fontWeight: FontWeight.w900,
-        letterSpacing: -2,
+        letterSpacing: -1.5,
         color: GameColors.cream,
       ),
       headlineMedium: TextStyle(
