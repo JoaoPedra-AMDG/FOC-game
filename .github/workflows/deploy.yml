@@ -107,11 +107,17 @@ jobs:
         run: flutter build web --release --pwa-strategy=none --base-href "/FOC-game/simulation/" --dart-define="SUPABASE_URL=$SUPABASE_URL" --dart-define="SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY"
       - name: Assemble all sites
         run: |
-          mkdir -p pages_artifact/lofi pages_artifact/royale pages_artifact/simulation
+          mkdir -p pages_artifact/lofi pages_artifact/royale pages_artifact/simulation pages_artifact/admin
           cp -a main_site/build/web/. pages_artifact/
           cp -a lofi_site/build/web/. pages_artifact/lofi/
           cp -a royale_site/build/web/. pages_artifact/royale/
           cp -a simulation_site/build/web/. pages_artifact/simulation/
+          cp -a main_site/admin/. pages_artifact/admin/
+      - name: Configure leaderboard editor
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+        run: python main_site/tool/build_admin_config.py pages_artifact/admin/config.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
