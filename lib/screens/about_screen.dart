@@ -33,10 +33,7 @@ class AboutScreen extends StatelessWidget {
     final link = Uri.parse(dashboardUrl);
     var opened = false;
     try {
-      opened = await launchUrl(link, webOnlyWindowName: '_blank');
-      if (!opened) {
-        opened = await launchUrl(link, webOnlyWindowName: '_self');
-      }
+      opened = await launchUrl(link, webOnlyWindowName: '_self');
     } catch (_) {
       // Show a useful message if the browser refuses both routes.
     }
