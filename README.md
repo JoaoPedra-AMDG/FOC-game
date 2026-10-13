@@ -58,9 +58,11 @@ https://joaopedra-amdg.github.io/FOC-game/. Push to
 `codex/lofi-cafe-palette` to publish the Lofi version at
 https://joaopedra-amdg.github.io/FOC-game/lofi/. Push to
 `codex/clash-royale-style` to publish the arena version at
-https://joaopedra-amdg.github.io/FOC-game/royale/. GitHub Actions checks and
-rebuilds all three sites after any branch changes. Wait for the deployment to
-finish, then refresh an already open browser tab. All versions use the same
+https://joaopedra-amdg.github.io/FOC-game/royale/. Push to
+`codex/simulation-display-style` to publish the investigation-style version at
+https://joaopedra-amdg.github.io/FOC-game/simulation/. GitHub Actions checks
+and rebuilds all four sites after any branch changes. Wait for the deployment
+to finish, then refresh an already open browser tab. All versions use the same
 Supabase leaderboard.
 
 ## Tuning the game
@@ -102,7 +104,7 @@ deceleration and reversal; drag; angle wrapping; and frame-rate consistency.
 
 ## Repository and hosting
 
-The included GitHub Actions workflow runs analysis/tests for all three branches,
+The included GitHub Actions workflow runs analysis/tests for all four branches,
 builds Flutter Web with separate base paths, and deploys them together
 to GitHub Pages on pushes to any of the branches.
 
