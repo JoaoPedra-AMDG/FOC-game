@@ -17,4 +17,15 @@ void main() {
     expect(SensorlessVisibility.uncertaintySweep(300), 0);
     expect(SensorlessVisibility.reveal(450), 1);
   });
+
+  test('rotor shadows converge from both sides and disappear at 300 RPM', () {
+    final start = SensorlessVisibility.shadowOffsets(18);
+    final halfway = SensorlessVisibility.shadowOffsets(159);
+    expect(start, hasLength(6));
+    expect(start.first, lessThan(-2));
+    expect(start.last, greaterThan(2));
+    expect(halfway.first.abs(), lessThan(start.first.abs()));
+    expect(halfway.last, lessThan(start.last));
+    expect(SensorlessVisibility.shadowOffsets(300), isEmpty);
+  });
 }
