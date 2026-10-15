@@ -18,6 +18,7 @@ class GameController extends ChangeNotifier {
 
   MotorSimulation motor = MotorSimulation();
   GamePhase phase = GamePhase.home;
+  bool sensorlessMode = false;
   double countdownLeft = GamePhysicsConfig.countdownSeconds;
   double timeLeft = GamePhysicsConfig.runDurationSeconds;
   double maxAbsoluteRpm = 0;
@@ -30,9 +31,10 @@ class GameController extends ChangeNotifier {
           ? 0
           : (_positiveTorqueArea / _playSeconds * 100).clamp(0, 100);
 
-  void start() {
+  void start({bool sensorless = false}) {
     _ticker.stop();
     motor = MotorSimulation();
+    sensorlessMode = sensorless;
     phase = GamePhase.countdown;
     countdownLeft = GamePhysicsConfig.countdownSeconds;
     timeLeft = GamePhysicsConfig.runDurationSeconds;

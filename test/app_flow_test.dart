@@ -29,6 +29,28 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('Sensorless mode starts with the rotor hidden', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(const TorqueChaseApp());
+    await tester.ensureVisible(find.byKey(const Key('home-sensorless')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('home-sensorless')));
+    await tester.pump();
+
+    final screen = tester.widget<GameScreen>(find.byType(GameScreen));
+    expect(screen.controller.sensorlessMode, isTrue);
+    expect(find.text('ROTOR  0%'), findsOneWidget);
+    screen.controller.home();
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('dragging the motor changes the commanded field angle', (
     tester,
   ) async {

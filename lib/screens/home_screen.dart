@@ -10,12 +10,14 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({
     super.key,
     required this.onPlay,
+    required this.onSensorlessPlay,
     required this.onHow,
     required this.onLeaderboard,
     required this.onAbout,
   });
 
   final VoidCallback onPlay;
+  final VoidCallback onSensorlessPlay;
   final VoidCallback onHow;
   final VoidCallback onLeaderboard;
   final VoidCallback onAbout;
@@ -146,6 +148,21 @@ class HomeScreen extends StatelessWidget {
                           onPressed: onPlay,
                           icon: const Icon(Icons.play_arrow_rounded),
                           label: const Text(HomeCopy.play),
+                        ),
+                        const SizedBox(height: 9),
+                        OutlinedButton.icon(
+                          key: const Key('home-sensorless'),
+                          onPressed: onSensorlessPlay,
+                          icon: const Icon(Icons.visibility_off_outlined),
+                          label: const Text(HomeCopy.sensorlessPlay),
+                        ),
+                        const SizedBox(height: 7),
+                        Text(
+                          HomeCopy.sensorlessHint,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(fontSize: 12),
                         ),
                       ],
                     ),
