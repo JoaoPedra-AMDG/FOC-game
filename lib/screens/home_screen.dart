@@ -9,12 +9,14 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({
     super.key,
     required this.onPlay,
+    required this.onSensorlessPlay,
     required this.onHow,
     required this.onLeaderboard,
     required this.onAbout,
   });
 
   final VoidCallback onPlay;
+  final VoidCallback onSensorlessPlay;
   final VoidCallback onHow;
   final VoidCallback onLeaderboard;
   final VoidCallback onAbout;
@@ -93,6 +95,21 @@ class HomeScreen extends StatelessWidget {
                 icon: const Icon(Icons.play_arrow_rounded, size: 28),
                 label: const Text(HomeCopy.play),
               ),
+              const SizedBox(height: 9),
+              OutlinedButton.icon(
+                key: const Key('home-sensorless'),
+                onPressed: onSensorlessPlay,
+                icon: const Icon(Icons.visibility_off_outlined, size: 22),
+                label: const Text(HomeCopy.sensorlessPlay),
+              ),
+              const SizedBox(height: 7),
+              Text(
+                HomeCopy.sensorlessHint,
+                textAlign: TextAlign.center,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontSize: 12),
+              ),
               const SizedBox(height: 18),
               Wrap(
                 alignment: WrapAlignment.center,
@@ -126,28 +143,27 @@ class HomeScreen extends StatelessWidget {
 }
 
 //class _HintPill extends StatelessWidget {
-  //const _HintPill();
+//const _HintPill();
 
-  @override
-  //Widget build(BuildContext context) => Container(
-  //  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-  //  decoration: BoxDecoration(
-  //    color: GameColors.ink.withValues(alpha: 0.94),
-  //    borderRadius: BorderRadius.circular(6),
-  //    border: Border.all(color: GameColors.line),
-  //  ),
-    //child: const Text(
-    //  HomeCopy.hint,
-    //  style: TextStyle(
-    //    color: GameColors.mint,
-    //    fontSize: 10,
-    //    fontWeight: FontWeight.w800,
-    //    letterSpacing: 1.1,
-    //  ),
-    //),
-  //);
+@override
+//Widget build(BuildContext context) => Container(
+//  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+//  decoration: BoxDecoration(
+//    color: GameColors.ink.withValues(alpha: 0.94),
+//    borderRadius: BorderRadius.circular(6),
+//    border: Border.all(color: GameColors.line),
+//  ),
+//child: const Text(
+//  HomeCopy.hint,
+//  style: TextStyle(
+//    color: GameColors.mint,
+//    fontSize: 10,
+//    fontWeight: FontWeight.w800,
+//    letterSpacing: 1.1,
+//  ),
+//),
+//);
 //}
-
 class _SmallLink extends StatelessWidget {
   const _SmallLink({
     super.key,

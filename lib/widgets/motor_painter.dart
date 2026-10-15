@@ -2,7 +2,23 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../config/game_physics_config.dart';
 import '../theme/game_theme.dart';
+
+abstract final class SensorlessVisibility {
+  static const double fullRevealRpm = 300;
+
+  static double reveal(double rpm) => math.max(
+    0,
+    math.min(
+      1,
+      (rpm.abs() - GamePhysicsConfig.initialRotorRpm) /
+          (fullRevealRpm - GamePhysicsConfig.initialRotorRpm),
+    ),
+  );
+
+  static double uncertaintySweep(double rpm) => 2 * math.pi * (1 - reveal(rpm));
+}
 
 class MotorPainter extends CustomPainter {
   const MotorPainter({
@@ -10,12 +26,16 @@ class MotorPainter extends CustomPainter {
     required this.fieldAngle,
     required this.torqueAngle,
     required this.torque,
+    this.sensorless = false,
+    this.rpm = 0,
   });
 
   final double rotorAngle;
   final double fieldAngle;
   final double torqueAngle;
   final double torque;
+  final bool sensorless;
+  final double rpm;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -24,9 +44,7 @@ class MotorPainter extends CustomPainter {
     final strong = torque > 0.78;
     final glow =
         Paint()
-          ..color = (torque >= 0
-                  ? const Color(0xFF789176)
-                  : GameColors.coral)
+          ..color = (torque >= 0 ? const Color(0xFF789176) : GameColors.coral)
               .withValues(alpha: strong ? 0.12 : 0.06)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 28);
     canvas.drawCircle(center, radius * 0.87, glow);
@@ -83,6 +101,39 @@ class MotorPainter extends CustomPainter {
       );
     }
 
+    final reveal = sensorless ? SensorlessVisibility.reveal(rpm) : 1.0;
+    if (sensorless && reveal < 1) {
+      final sweep = SensorlessVisibility.uncertaintySweep(rpm);
+      final uncertaintyRing = Rect.fromCircle(
+        center: center,
+        radius: radius * 0.47,
+      );
+      final arcStart = rotorAngle - sweep / 2;
+      canvas.drawArc(
+        uncertaintyRing,
+        arcStart,
+        sweep,
+        false,
+        Paint()
+          ..color = GameColors.southPole.withValues(alpha: 0.34 * (1 - reveal))
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = radius * 0.19
+          ..strokeCap = StrokeCap.round
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, radius * 0.075),
+      );
+      canvas.drawArc(
+        uncertaintyRing,
+        arcStart,
+        sweep,
+        false,
+        Paint()
+          ..color = GameColors.southPole.withValues(alpha: 0.14 * (1 - reveal))
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = radius * 0.075
+          ..strokeCap = StrokeCap.round,
+      );
+    }
+
     final rotorTip = _point(center, radius * 0.42, rotorAngle);
     final rotorTail = _point(center, radius * 0.42, rotorAngle + math.pi);
     final bar = RRect.fromRectAndRadius(
@@ -94,42 +145,65 @@ class MotorPainter extends CustomPainter {
       ),
       Radius.circular(radius * 0.11),
     );
-    canvas.save();
-    canvas.translate(center.dx, center.dy);
-    canvas.rotate(rotorAngle);
-    canvas.clipRRect(bar);
-    canvas.drawRect(
-      Rect.fromLTWH(
-        -radius * 0.53,
-        -radius * 0.11,
-        radius * 0.53,
-        radius * 0.22,
-      ),
-      Paint()..color = GameColors.southPole,
-    );
-    canvas.drawRect(
-      Rect.fromLTWH(0, -radius * 0.11, radius * 0.53, radius * 0.22),
-      Paint()..color = GameColors.northPole,
-    );
-    canvas.restore();
-    _label(canvas, 'N', rotorTip, radius * 0.12, Colors.white);
-    _label(canvas, 'S', rotorTail, radius * 0.12, Colors.white);
+    if (reveal > 0) {
+      final rotorBlur =
+          sensorless && reveal < 1
+              ? MaskFilter.blur(BlurStyle.normal, radius * 0.07 * (1 - reveal))
+              : null;
+      canvas.save();
+      canvas.translate(center.dx, center.dy);
+      canvas.rotate(rotorAngle);
+      canvas.clipRRect(bar);
+      canvas.drawRect(
+        Rect.fromLTWH(
+          -radius * 0.53,
+          -radius * 0.11,
+          radius * 0.53,
+          radius * 0.22,
+        ),
+        Paint()
+          ..color = GameColors.southPole.withValues(alpha: reveal)
+          ..maskFilter = rotorBlur,
+      );
+      canvas.drawRect(
+        Rect.fromLTWH(0, -radius * 0.11, radius * 0.53, radius * 0.22),
+        Paint()
+          ..color = GameColors.northPole.withValues(alpha: reveal)
+          ..maskFilter = rotorBlur,
+      );
+      canvas.restore();
+      if (reveal > 0.35) {
+        _label(
+          canvas,
+          'N',
+          rotorTip,
+          radius * 0.12,
+          Colors.white.withValues(alpha: reveal),
+        );
+        _label(
+          canvas,
+          'S',
+          rotorTail,
+          radius * 0.12,
+          Colors.white.withValues(alpha: reveal),
+        );
+      }
+    }
 
-    final arcRadius = radius * 0.60;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: arcRadius),
-      rotorAngle,
-      torqueAngle,
-      false,
-      Paint()
-        ..color =
-            torque >= 0
-                ? const Color(0xFF6E8A72)
-                : GameColors.coral
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = radius * 0.035
-        ..strokeCap = StrokeCap.round,
-    );
+    if (reveal == 1) {
+      final arcRadius = radius * 0.60;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: arcRadius),
+        rotorAngle,
+        torqueAngle,
+        false,
+        Paint()
+          ..color = torque >= 0 ? const Color(0xFF6E8A72) : GameColors.coral
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = radius * 0.035
+          ..strokeCap = StrokeCap.round,
+      );
+    }
 
     final fieldTip = _point(center, radius * 0.5175, fieldAngle);
     final fieldBase = _point(center, radius * 0.1125, fieldAngle);
@@ -190,5 +264,7 @@ class MotorPainter extends CustomPainter {
       rotorAngle != oldDelegate.rotorAngle ||
       fieldAngle != oldDelegate.fieldAngle ||
       torqueAngle != oldDelegate.torqueAngle ||
-      torque != oldDelegate.torque;
+      torque != oldDelegate.torque ||
+      sensorless != oldDelegate.sensorless ||
+      rpm != oldDelegate.rpm;
 }

@@ -8,6 +8,9 @@ abstract final class HomeCopy {
       'Keep the magnetic field 90° ahead of the rotor ·  25 SECOND RUN';
   //static const hint = 'hint';
   static const play = 'PLAY';
+  static const sensorlessPlay = 'SENSORLESS MODE';
+  static const sensorlessHint =
+      'Find the rotor as its position becomes clearer with speed.';
   static const how = 'How it works';
   static const leaderboard = 'Leaderboard';
   static const about = 'About us';
