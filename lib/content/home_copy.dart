@@ -8,6 +8,9 @@ abstract final class HomeCopy {
   static const introduction = 'Hold your lead. Chase the highest RPM.';
   //static const hint = 'hint';
   static const play = 'BATTLE NOW';
+  static const sensorlessPlay = 'SENSORLESS MODE';
+  static const sensorlessHint =
+      'Find the rotor as its position becomes clearer with speed.';
   static const how = 'HOW TO PLAY';
   static const leaderboard = 'TOP SCORES';
   static const about = 'TEAM';
