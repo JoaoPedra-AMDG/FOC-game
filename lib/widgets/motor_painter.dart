@@ -18,6 +18,19 @@ abstract final class SensorlessVisibility {
   );
 
   static double uncertaintySweep(double rpm) => 2 * math.pi * (1 - reveal(rpm));
+
+  static List<double> shadowOffsets(double rpm) {
+    final sweep = uncertaintySweep(rpm);
+    if (sweep <= 0) return const [];
+    return [
+      -0.43,
+      -0.28,
+      -0.13,
+      0.13,
+      0.28,
+      0.43,
+    ].map((fraction) => fraction * sweep).toList();
+  }
 }
 
 class MotorPainter extends CustomPainter {
@@ -145,6 +158,21 @@ class MotorPainter extends CustomPainter {
       ),
       Radius.circular(radius * 0.11),
     );
+    if (sensorless && reveal < 1) {
+      final shadowAlpha = 0.15 * (1 - reveal);
+      final shadowBlur = radius * (0.035 + 0.055 * (1 - reveal));
+      for (final offset in SensorlessVisibility.shadowOffsets(rpm)) {
+        _paintRotorShadow(
+          canvas,
+          center,
+          radius,
+          rotorAngle + offset,
+          bar,
+          shadowAlpha,
+          shadowBlur,
+        );
+      }
+    }
     if (reveal > 0) {
       final rotorBlur =
           sensorless && reveal < 1
@@ -234,6 +262,46 @@ class MotorPainter extends CustomPainter {
     origin.dx + math.cos(angle) * length,
     origin.dy + math.sin(angle) * length,
   );
+
+  void _paintRotorShadow(
+    Canvas canvas,
+    Offset center,
+    double radius,
+    double angle,
+    RRect bar,
+    double alpha,
+    double blur,
+  ) {
+    final blurFilter = MaskFilter.blur(BlurStyle.normal, blur);
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.rotate(angle);
+    canvas.drawRRect(
+      bar,
+      Paint()
+        ..color = GameColors.line.withValues(alpha: alpha * 0.7)
+        ..maskFilter = blurFilter,
+    );
+    canvas.clipRRect(bar);
+    canvas.drawRect(
+      Rect.fromLTWH(
+        -radius * 0.53,
+        -radius * 0.11,
+        radius * 0.53,
+        radius * 0.22,
+      ),
+      Paint()
+        ..color = GameColors.southPole.withValues(alpha: alpha)
+        ..maskFilter = blurFilter,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(0, -radius * 0.11, radius * 0.53, radius * 0.22),
+      Paint()
+        ..color = GameColors.northPole.withValues(alpha: alpha)
+        ..maskFilter = blurFilter,
+    );
+    canvas.restore();
+  }
 
   void _label(
     Canvas canvas,
