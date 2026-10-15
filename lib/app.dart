@@ -59,7 +59,8 @@ class _AppShellState extends State<_AppShell> {
   @override
   Widget build(BuildContext context) => switch (_phase) {
     GamePhase.home => HomeScreen(
-      onPlay: _game.start,
+      onPlay: () => _game.start(),
+      onSensorlessPlay: () => _game.start(sensorless: true),
       onHow: () => _show(const HowScreen()),
       onLeaderboard: () => _show(LeaderboardScreen(service: _leaderboard)),
       onAbout: () => _show(const AboutScreen()),
@@ -69,7 +70,7 @@ class _AppShellState extends State<_AppShell> {
     GamePhase.results => ResultsScreen(
       controller: _game,
       service: _leaderboard,
-      onPlayAgain: _game.start,
+      onPlayAgain: () => _game.start(sensorless: _game.sensorlessMode),
       onHome: _game.home,
       onHow: () => _show(const HowScreen()),
       onLeaderboard: () => _show(LeaderboardScreen(service: _leaderboard)),

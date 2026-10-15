@@ -37,7 +37,9 @@ class GameScreen extends StatelessWidget {
                                 icon: const Icon(Icons.arrow_back_rounded),
                               ),
                               Text(
-                                'FOC FAST',
+                                controller.sensorlessMode
+                                    ? 'SENSORLESS'
+                                    : 'FOC FAST',
                                 style: Theme.of(context).textTheme.labelLarge,
                               ),
                               const Spacer(),
@@ -69,9 +71,13 @@ class GameScreen extends StatelessWidget {
                           const SizedBox(height: 7),
                           Text(
                             controller.phase == GamePhase.countdown
-                                ? 'Get ready — drag the yellow field arrow'
+                                ? controller.sensorlessMode
+                                    ? 'Get ready — the rotor is hidden until you build speed'
+                                    : 'Get ready — drag the yellow field arrow'
+                                : controller.sensorlessMode
+                                ? 'Follow the shrinking blur · rotor fully clear at 300 RPM'
                                 : 'Drag around the motor · Aim 90° ahead of the rotor',
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyMedium
@@ -128,17 +134,21 @@ class _SpeedReadout extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              'ANGLE  ${(controller.motor.torqueAngle * 180 / math.pi).round()}°',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            if (!controller.sensorlessMode ||
+                SensorlessVisibility.reveal(rpm) == 1)
+              Text(
+                'ANGLE  ${(controller.motor.torqueAngle * 180 / math.pi).round()}°',
+                style: Theme.of(context).textTheme.bodyMedium,
+              )
+            else
+              Text(
+                'ROTOR  ${(SensorlessVisibility.reveal(rpm) * 100).round()}%',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             Text(
               'TORQUE  ${torque >= 0 ? '+' : ''}${(torque * 100).round()}%',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color:
-                    torque >= 0
-                        ? const Color(0xFF75D8AC)
-                        : GameColors.coral,
+                color: torque >= 0 ? const Color(0xFF75D8AC) : GameColors.coral,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -180,6 +190,8 @@ class _MotorControl extends StatelessWidget {
                   fieldAngle: controller.motor.fieldAngle,
                   torqueAngle: controller.motor.torqueAngle,
                   torque: controller.motor.normalizedTorque,
+                  sensorless: controller.sensorlessMode,
+                  rpm: controller.motor.rpm,
                 ),
               ),
             ),
