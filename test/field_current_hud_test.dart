@@ -1,0 +1,99 @@
+import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:torque_chase/game/game_controller.dart';
+import 'package:torque_chase/screens/game_screen.dart';
+import 'package:torque_chase/theme/game_theme.dart';
+import 'package:torque_chase/widgets/field_current_hud.dart';
+import 'package:torque_chase/widgets/kart_track.dart';
+
+void main() {
+  test(
+    'game currents follow the commanded field independently of rotor angle',
+    () {
+      for (final rotor in [-2.0, 0.0, 1.7]) {
+        for (final field in [-2.3, 0.0, math.pi / 2]) {
+          final command = gameCurrentCommand(rotor, field);
+          expect(command.a, closeTo(math.cos(field), 1e-12));
+          expect(command.b, closeTo(math.cos(field - 2 * math.pi / 3), 1e-12));
+          expect(command.c, closeTo(math.cos(field + 2 * math.pi / 3), 1e-12));
+          expect(command.a + command.b + command.c, closeTo(0, 1e-12));
+          expect(command.q, closeTo(math.sin(field - rotor), 1e-12));
+        }
+      }
+    },
+  );
+
+  for (final size in [
+    const Size(320, 568),
+    const Size(390, 740),
+    const Size(1280, 900),
+  ]) {
+    testWidgets(
+      'game at $size keeps controls and updates the top current panel',
+      (tester) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+        });
+        final controller = GameController()..start();
+        addTearDown(controller.dispose);
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: gameTheme(),
+            home: GameScreen(controller: controller, onExit: () {}),
+          ),
+        );
+        expect(find.byType(KartTrack), findsNothing);
+        expect(find.byType(FieldCurrentHud), findsOneWidget);
+        final motor = find.byKey(const Key('motor-control'));
+        expect(tester.getSize(motor).height, greaterThan(160));
+        await tester.tapAt(tester.getCenter(motor) + const Offset(75, 0));
+        await tester.pump();
+        expect(find.text('1.00 A'), findsOneWidget);
+        expect(find.text('-0.50 A'), findsNWidgets(2));
+        expect(find.text('d 1.00  ·  q 0.00 A'), findsOneWidget);
+        expect(
+          tester.getTopLeft(find.byKey(const Key('field-current-hud'))).dy,
+          lessThan(tester.getTopLeft(motor).dy),
+        );
+        expect(tester.takeException(), isNull);
+        controller.home();
+        await tester.pumpWidget(const SizedBox());
+      },
+    );
+  }
+
+  testWidgets('sensorless panel does not disclose the hidden rotor frame', (
+    tester,
+  ) async {
+    Future<void> show(double angle, double rpm) => tester.pumpWidget(
+      MaterialApp(
+        theme: gameTheme(),
+        home: Scaffold(
+          body: SizedBox(
+            height: 124,
+            child: FieldCurrentHud(
+              rotorAngle: angle,
+              fieldAngle: 0,
+              sensorless: true,
+              rpm: rpm,
+            ),
+          ),
+        ),
+      ),
+    );
+    await show(0, 18);
+    expect(find.text('CLARKE · α / β'), findsOneWidget);
+    expect(find.text('α 1.00  ·  β 0.00 A'), findsOneWidget);
+    await show(math.pi / 2, 18);
+    expect(find.text('α 1.00  ·  β 0.00 A'), findsOneWidget);
+    await show(math.pi / 2, 300);
+    expect(find.text('PARK · d / q'), findsOneWidget);
+    expect(find.text('d 0.00  ·  q -1.00 A'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+}

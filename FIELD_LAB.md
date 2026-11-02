@@ -2,19 +2,23 @@
 
 Preview: https://foc-fast-field-lab.pretty-mint-6178.chatgpt.site
 
-Branch: `codex/stator-transform-lab`. The branch entry point opens a continuous,
-interactive field lab instead of the kart game. The original game remains on main.
+Branch: `codex/stator-transform-lab`. The entry point uses the main game's home
+screen, controls, timed runs, sensorless mode, results and leaderboard. In the run
+screen the kart track is replaced with a d/q vector diagram (top left) and three
+signed phase current commands (top right), updated from the dragged field arrow.
 
-Drag the stator vector, change d/q current commands, scrub the electrical rotor
-angle, or animate rotation. Current values are ideal commands in amperes, with no
-hardware measurements or inverter model. Positive electrical angles rotate
-counterclockwise from phase A / alpha. The model assumes a balanced sinusoidal
-two-pole motor, zero sequence = 0 and amplitude-invariant transforms.
+The game uses a fixed 1 A peak ideal current command with no hardware measurements
+or inverter model. Its electrical angles follow the main game's clockwise screen
+convention; positive q corresponds to positive game torque. The upright d/q chart
+is a separate rotor-frame view with d to the right and q upward. The model assumes
+balanced sinusoidal phases, zero sequence = 0 and amplitude-invariant transforms.
+In sensorless mode, the panel shows stationary alpha/beta components until the
+rotor is fully revealed at 300 RPM, to avoid exposing its hidden angle via d/q.
 
 Inverse Park converts d/q commands to alpha/beta; inverse Clarke produces abc.
 Phase field arrows include the 2/3 scaling so they sum to the resultant vector.
-The forward Clarke/Park formulas show how sensor measurements would return to dq.
-The coil sketch shows phase magnetic axes, not a physical slot winding design.
+The original standalone `TransformLab` screen remains available in source as an
+educational reference; it is not the app entry point for this game variant.
 
 Equation references:
 - https://www.microchip.com/en-us/products/fpgas-and-plds/ip-core-tools/foc-transforms

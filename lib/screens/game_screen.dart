@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../game/game_controller.dart';
 import '../theme/game_theme.dart';
-import '../widgets/kart_track.dart';
+import '../widgets/field_current_hud.dart';
 import '../widgets/motor_painter.dart';
 
 class GameScreen extends StatelessWidget {
@@ -54,8 +54,10 @@ class GameScreen extends StatelessWidget {
                           const SizedBox(height: 5),
                           SizedBox(
                             height: compact ? 108 : 124,
-                            child: KartTrack(
-                              distance: controller.trackDistance,
+                            child: FieldCurrentHud(
+                              rotorAngle: controller.motor.rotorAngle,
+                              fieldAngle: controller.motor.fieldAngle,
+                              sensorless: controller.sensorlessMode,
                               rpm: controller.motor.rpm,
                             ),
                           ),
