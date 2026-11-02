@@ -2,7 +2,7 @@ name: Deploy Flutter Web
 
 on:
   push:
-    branches: [main, codex/lofi-cafe-palette, codex/clash-royale-style, codex/simulation-display-style, codex/stator-transform-lab]
+    branches: [main, codex/lofi-cafe-palette, codex/clash-royale-style, codex/simulation-display-style]
   workflow_dispatch:
 
 permissions:
@@ -38,11 +38,6 @@ jobs:
         with:
           ref: codex/simulation-display-style
           path: simulation_site
-      - name: Check out transformation lab
-        uses: actions/checkout@v4
-        with:
-          ref: codex/stator-transform-lab
-          path: transforms_site
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -57,8 +52,6 @@ jobs:
         working-directory: royale_site
       - run: python tool/resize_icons.py
         working-directory: simulation_site
-      - run: python tool/resize_icons.py
-        working-directory: transforms_site
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -112,23 +105,13 @@ jobs:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
         run: flutter build web --release --pwa-strategy=none --base-href "/FOC-game/simulation/" --dart-define="SUPABASE_URL=$SUPABASE_URL" --dart-define="SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY"
-      - run: flutter pub get
-        working-directory: transforms_site
-      - run: flutter analyze
-        working-directory: transforms_site
-      - run: flutter test
-        working-directory: transforms_site
-      - name: Build transformation lab
-        working-directory: transforms_site
-        run: flutter build web --release --pwa-strategy=none --base-href "/FOC-game/transforms/"
       - name: Assemble all sites
         run: |
-          mkdir -p pages_artifact/lofi pages_artifact/royale pages_artifact/simulation pages_artifact/admin pages_artifact/transforms
+          mkdir -p pages_artifact/lofi pages_artifact/royale pages_artifact/simulation pages_artifact/admin
           cp -a main_site/build/web/. pages_artifact/
           cp -a lofi_site/build/web/. pages_artifact/lofi/
           cp -a royale_site/build/web/. pages_artifact/royale/
           cp -a simulation_site/build/web/. pages_artifact/simulation/
-          cp -a transforms_site/build/web/. pages_artifact/transforms/
           cp -a main_site/admin/. pages_artifact/admin/
       - name: Configure leaderboard editor
         env:
