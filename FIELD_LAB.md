@@ -1,6 +1,6 @@
 # FOC FAST field lab
 
-Preview: https://joaopedra-amdg.github.io/FOC-game/transforms/
+Preview: https://foc-fast-field-lab.pretty-mint-6178.chatgpt.site
 
 Branch: `codex/stator-transform-lab`. The branch entry point opens a continuous,
 interactive field lab instead of the kart game. The original game remains on main.
@@ -20,5 +20,6 @@ Equation references:
 - https://www.microchip.com/en-us/products/fpgas-and-plds/ip-core-tools/foc-transforms
 - https://onlinedocs.microchip.com/oxy/GUID-69278EBA-9F00-4CEE-8103-2998236856BD-en-US-2/GUID-F60C965F-09E5-49C9-8BF3-F21E30DADBDB.html
 
-The shared Pages workflow builds this branch into `/transforms/` alongside all
-existing sites. Keep that checkout/build/copy step when changing deployment.
+This branch has its own Sites preview. The existing GitHub Pages workflows are
+unchanged. To refresh the preview after editing this branch, rebuild Flutter Web
+with base href `/` and republish the matching Sites source and static build.
