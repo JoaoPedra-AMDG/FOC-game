@@ -496,7 +496,9 @@ class _StatorPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 22,
     );
-    _axes(canvas, c, r * .80, 0, 'α', 'β', GameColors.line);
+    _axes(canvas, c, r * .80, 0, '', '', GameColors.line);
+    _label(canvas, 'α', c + Offset(r * .66, 17), GameColors.muted);
+    _label(canvas, 'β', c + Offset(-17, -r * .66), GameColors.muted);
     // Rotor reference axes use separate colours and a dashed line.
     for (var j = 0; j < 2; j++) {
       final a = v.theta + j * math.pi / 2;
