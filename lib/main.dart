@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'app.dart';
+import 'screens/transform_lab.dart';
+import 'theme/game_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const TorqueChaseApp());
+  runApp(
+    MaterialApp(
+      title: 'FOC FAST · Field Lab',
+      debugShowCheckedModeBanner: false,
+      theme: gameTheme(),
+      home: const TransformLab(),
+    ),
+  );
 }
