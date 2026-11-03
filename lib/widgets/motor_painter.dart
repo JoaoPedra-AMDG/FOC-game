@@ -114,6 +114,8 @@ class MotorPainter extends CustomPainter {
       );
     }
 
+    _paintStatorPoles(canvas, center, radius);
+
     final reveal = sensorless ? SensorlessVisibility.reveal(rpm) : 1.0;
     if (sensorless && reveal < 1) {
       final sweep = SensorlessVisibility.uncertaintySweep(rpm);
@@ -256,6 +258,56 @@ class MotorPainter extends CustomPainter {
       canvas.drawLine(fieldTip, headB, paint);
     }
     canvas.drawCircle(center, radius * 0.07, Paint()..color = GameColors.rod);
+  }
+
+  // The translucent magnet is the commanded STATOR field. It follows only
+  // fieldAngle and never reveals the actual rotor in sensorless mode.
+  void _paintStatorPoles(Canvas canvas, Offset center, double radius) {
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.rotate(fieldAngle);
+    final shadow = RRect.fromRectAndRadius(
+      Rect.fromLTRB(-radius * .67, -radius * .15, radius * .67, radius * .15),
+      Radius.circular(radius * .10),
+    );
+    canvas.save();
+    canvas.clipRRect(shadow);
+    canvas.drawRect(
+      Rect.fromLTRB(0, -radius * .15, radius * .67, radius * .15),
+      Paint()..color = GameColors.northPole.withValues(alpha: .17),
+    );
+    canvas.drawRect(
+      Rect.fromLTRB(-radius * .67, -radius * .15, 0, radius * .15),
+      Paint()..color = GameColors.southPole.withValues(alpha: .17),
+    );
+    canvas.restore();
+    canvas.drawRRect(
+      shadow,
+      Paint()
+        ..color = GameColors.line.withValues(alpha: .25)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1,
+    );
+    canvas.restore();
+    for (final north in [true, false]) {
+      final angle = fieldAngle + (north ? 0 : math.pi);
+      final color = north ? GameColors.northPole : GameColors.southPole;
+      final position = _point(center, radius * .71, angle);
+      canvas.drawCircle(
+        position,
+        radius * .13,
+        Paint()
+          ..color = color.withValues(alpha: .18)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, radius * .045),
+      );
+      _label(
+        canvas,
+        north ? 'Nₛ' : 'Sₛ',
+        position,
+        radius * .09,
+        color.withValues(alpha: .85),
+      );
+    }
   }
 
   Offset _point(Offset origin, double length, double angle) => Offset(

@@ -49,6 +49,8 @@ void main() {
         );
         expect(find.byType(KartTrack), findsNothing);
         expect(find.byType(FieldCurrentHud), findsOneWidget);
+        expect(find.byKey(const Key('phase-field-diagram')), findsOneWidget);
+        expect(find.byKey(const Key('phase-sinusoids')), findsOneWidget);
         final motor = find.byKey(const Key('motor-control'));
         expect(tester.getSize(motor).height, greaterThan(160));
         await tester.tapAt(tester.getCenter(motor) + const Offset(75, 0));
@@ -87,13 +89,36 @@ void main() {
       ),
     );
     await show(0, 18);
-    expect(find.text('CLARKE · α / β'), findsOneWidget);
+    expect(find.text('PHASE FIELDS · Σ = I*'), findsOneWidget);
     expect(find.text('α 1.00  ·  β 0.00 A'), findsOneWidget);
     await show(math.pi / 2, 18);
     expect(find.text('α 1.00  ·  β 0.00 A'), findsOneWidget);
     await show(math.pi / 2, 300);
-    expect(find.text('PARK · d / q'), findsOneWidget);
+    expect(find.text('PHASE FIELDS · Σ = I*'), findsOneWidget);
     expect(find.text('d 0.00  ·  q -1.00 A'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  test(
+    'three phase field vectors sum to the control in screen coordinates',
+    () {
+      for (var step = -36; step <= 36; step++) {
+        final angle = step * math.pi / 18;
+        final command = gameCurrentCommand(.8, angle);
+        final sum = phaseFieldContributions(
+          command,
+        ).fold(Offset.zero, (a, b) => a + b);
+        expect(sum.dx, closeTo(math.cos(angle), 1e-12));
+        expect(sum.dy, closeTo(math.sin(angle), 1e-12));
+        final cursor = PhaseSinusoidsPainter(angle).cursorAngle;
+        expect(cursor, inInclusiveRange(0, 2 * math.pi));
+        for (var phase = 0; phase < 3; phase++) {
+          expect(
+            math.cos(cursor - phase * 2 * math.pi / 3),
+            closeTo(command.phases[phase], 1e-12),
+          );
+        }
+      }
+    },
+  );
 }

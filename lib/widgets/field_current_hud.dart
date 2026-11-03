@@ -1,16 +1,13 @@
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
-
 import '../game/foc_transform.dart';
 import '../theme/game_theme.dart';
 import 'motor_painter.dart';
 
 const _phaseColors = [Color(0xFFB65E55), Color(0xFF548776), Color(0xFF537EA7)];
 
-/// Game angles follow the on-screen clockwise motor convention. The upright
-/// d/q chart displays the same transform in its own rotor reference frame.
-/// Currents are ideal commands at a fixed 1 A peak, not hardware measurements.
+/// Angles follow the clockwise screen convention of the game motor.
+/// Currents are ideal 1 A peak commands, not hardware measurements.
 FocTransform gameCurrentCommand(double rotorAngle, double fieldAngle) =>
     FocTransform(
       d: math.cos(fieldAngle - rotorAngle),
@@ -18,6 +15,13 @@ FocTransform gameCurrentCommand(double rotorAngle, double fieldAngle) =>
       theta: rotorAngle,
     );
 
+/// Amplitude-invariant phase fields: their vector sum is exactly the control.
+List<Offset> phaseFieldContributions(FocTransform command) => List.generate(3, (
+  i,
+) {
+  final angle = i * 2 * math.pi / 3;
+  return Offset(math.cos(angle), math.sin(angle)) * (2 / 3 * command.phases[i]);
+});
 String _number(double x) => (x.abs() < .005 ? 0.0 : x).toStringAsFixed(2);
 
 class FieldCurrentHud extends StatelessWidget {
@@ -28,16 +32,11 @@ class FieldCurrentHud extends StatelessWidget {
     this.sensorless = false,
     this.rpm = 0,
   });
-
-  final double rotorAngle;
-  final double fieldAngle;
+  final double rotorAngle, fieldAngle, rpm;
   final bool sensorless;
-  final double rpm;
-
   @override
   Widget build(BuildContext context) {
     final command = gameCurrentCommand(rotorAngle, fieldAngle);
-    // A d/q readout would expose the hidden rotor angle in sensorless mode.
     final rotorKnown = !sensorless || SensorlessVisibility.reveal(rpm) == 1;
     final x = rotorKnown ? command.d : command.alpha;
     final y = rotorKnown ? command.q : command.beta;
@@ -51,20 +50,20 @@ class FieldCurrentHud extends StatelessWidget {
           child: _panel(
             Column(
               children: [
-                Text(
-                  rotorKnown ? 'PARK · d / q' : 'CLARKE · α / β',
-                  key: const Key('vector-frame-label'),
-                  style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
+                const FittedBox(
+                  child: Text(
+                    'PHASE FIELDS · Σ = I*',
+                    key: Key('vector-frame-label'),
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
                   ),
                 ),
                 Expanded(
                   child: Semantics(
                     label:
-                        'Desired vector: $xName ${_number(x)} amperes, $yName ${_number(y)} amperes',
+                        'Phase A, B and C fields add to the gold resultant aligned with the control arrow. $xName ${_number(x)} amperes, $yName ${_number(y)} amperes.',
                     child: CustomPaint(
-                      painter: _VectorPainter(x, y, xName, yName),
+                      key: const Key('phase-field-diagram'),
+                      painter: PhaseFieldPainter(command, fieldAngle),
                       child: const SizedBox.expand(),
                     ),
                   ),
@@ -85,58 +84,71 @@ class FieldCurrentHud extends StatelessWidget {
         Expanded(
           child: _panel(
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
-                  'THREE PHASE CURRENTS',
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
+                const FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'THREE PHASE SINUSOIDS',
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
+                  ),
                 ),
-                const SizedBox(height: 3),
-                for (var i = 0; i < 3; i++)
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Text(
-                          ['A', 'B', 'C'][i],
-                          style: TextStyle(
-                            color: _phaseColors[i],
-                            fontSize: 12,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                        const SizedBox(width: 7),
-                        Expanded(
-                          child: CustomPaint(
-                            painter: _CurrentBar(
-                              command.phases[i],
-                              _phaseColors[i],
-                            ),
-                            child: const SizedBox(height: 10),
-                          ),
-                        ),
-                        const SizedBox(width: 7),
-                        SizedBox(
-                          width: 55,
-                          child: Text(
-                            '${_number(command.phases[i])} A',
-                            key: Key('phase-current-$i'),
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              color: _phaseColors[i],
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              fontFeatures: const [
-                                FontFeature.tabularFigures(),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                const SizedBox(height: 2),
+                Expanded(
+                  child: Semantics(
+                    label:
+                        'Three sinusoidal phase current commands over 0 to 360 degrees of field angle. The cursor and dots mark the current commands.',
+                    child: CustomPaint(
+                      key: const Key('phase-sinusoids'),
+                      painter: PhaseSinusoidsPainter(fieldAngle),
+                      child: const SizedBox.expand(),
                     ),
                   ),
-                const Text(
-                  '1 A peak · ideal commands',
-                  style: TextStyle(fontSize: 9, color: GameColors.muted),
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  children: List.generate(
+                    3,
+                    (i) => Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Column(
+                          children: [
+                            Text(
+                              ['A', 'B', 'C'][i],
+                              style: TextStyle(
+                                color: _phaseColors[i],
+                                fontSize: 9,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                            Text(
+                              '${_number(command.phases[i])} A',
+                              key: Key('phase-current-$i'),
+                              style: TextStyle(
+                                color: _phaseColors[i],
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                fontFeatures: const [
+                                  FontFeature.tabularFigures(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                const FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    '1 A peak · field angle, not time',
+                    style: TextStyle(fontSize: 8, color: GameColors.muted),
+                  ),
                 ),
               ],
             ),
@@ -147,7 +159,7 @@ class FieldCurrentHud extends StatelessWidget {
   }
 
   Widget _panel(Widget child) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
     decoration: BoxDecoration(
       color: GameColors.panel,
       borderRadius: BorderRadius.circular(6),
@@ -157,115 +169,191 @@ class FieldCurrentHud extends StatelessWidget {
   );
 }
 
-class _VectorPainter extends CustomPainter {
-  const _VectorPainter(this.x, this.y, this.xName, this.yName);
-  final double x, y;
-  final String xName, yName;
+void _label(
+  Canvas canvas,
+  String value,
+  Offset p,
+  Color color, {
+  double size = 9,
+}) {
+  final text = TextPainter(
+    text: TextSpan(
+      text: value,
+      style: TextStyle(
+        fontSize: size,
+        color: color,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    textDirection: TextDirection.ltr,
+  )..layout();
+  text.paint(canvas, p - Offset(text.width / 2, text.height / 2));
+}
 
+void _arrow(
+  Canvas canvas,
+  Offset start,
+  Offset end,
+  Color color,
+  double width,
+) {
+  final delta = end - start;
+  if (delta.distance < .5) return;
+  final paint =
+      Paint()
+        ..color = color
+        ..strokeWidth = width
+        ..strokeCap = StrokeCap.round;
+  canvas.drawLine(start, end, paint);
+  final angle = math.atan2(delta.dy, delta.dx);
+  final head = math.min(5.0, delta.distance * .35);
+  for (final sign in [-1, 1]) {
+    canvas.drawLine(
+      end,
+      end -
+          Offset(math.cos(angle + sign * .5), math.sin(angle + sign * .5)) *
+              head,
+      paint,
+    );
+  }
+}
+
+class PhaseFieldPainter extends CustomPainter {
+  const PhaseFieldPainter(this.command, this.fieldAngle);
+  final FocTransform command;
+  final double fieldAngle;
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = math.min(size.width * .34, size.height * .32);
-    final axis =
-        Paint()
-          ..color = GameColors.line
-          ..strokeWidth = 1;
-    canvas.drawLine(
-      center - Offset(radius, 0),
-      center + Offset(radius, 0),
-      axis,
-    );
-    canvas.drawLine(
-      center - Offset(0, radius),
-      center + Offset(0, radius),
-      axis,
-    );
-    _label(canvas, xName, center + Offset(radius + 9, 0), GameColors.muted);
-    _label(canvas, yName, center - Offset(0, radius + 7), GameColors.muted);
-    final corner = center + Offset(x * radius, 0);
-    final tip = center + Offset(x, -y) * radius;
-    canvas.drawLine(
+    final radius = math.min(size.width * .33, size.height * .35);
+    canvas.drawCircle(
       center,
-      corner,
+      radius,
       Paint()
-        ..color = GameColors.northPole
-        ..strokeWidth = 2,
+        ..color = GameColors.line.withValues(alpha: .5)
+        ..style = PaintingStyle.stroke,
     );
-    canvas.drawLine(
-      corner,
-      tip,
-      Paint()
-        ..color = GameColors.southPole
-        ..strokeWidth = 2,
-    );
-    final p =
-        Paint()
-          ..color = GameColors.fieldArrow
-          ..strokeWidth = 3
-          ..strokeCap = StrokeCap.round;
-    canvas.drawLine(center, tip, p);
-    final angle = math.atan2(-y, x);
-    for (final sign in [-1, 1]) {
+    for (var i = 0; i < 3; i++) {
+      final angle = i * 2 * math.pi / 3;
+      final direction = Offset(math.cos(angle), math.sin(angle));
       canvas.drawLine(
-        tip,
-        tip -
-            Offset(math.cos(angle + sign * .5), math.sin(angle + sign * .5)) *
-                6,
-        p,
+        center - direction * radius,
+        center + direction * radius,
+        Paint()
+          ..color = _phaseColors[i].withValues(alpha: .25)
+          ..strokeWidth = 1,
+      );
+      _label(
+        canvas,
+        ['A', 'B', 'C'][i],
+        center + direction * (radius + 9),
+        _phaseColors[i],
       );
     }
-    _label(canvas, 'I*', tip + const Offset(10, -6), GameColors.gold);
+    // Faint head-to-tail segments expose the sum; solid arrows show each
+    // phase's field from a common origin.
+    var sum = Offset.zero;
+    final fields = phaseFieldContributions(command);
+    for (var i = 0; i < 3; i++) {
+      final next = sum + fields[i];
+      canvas.drawLine(
+        center + sum * radius,
+        center + next * radius,
+        Paint()
+          ..color = _phaseColors[i].withValues(alpha: .28)
+          ..strokeWidth = 1,
+      );
+      _arrow(canvas, center, center + fields[i] * radius, _phaseColors[i], 2);
+      sum = next;
+    }
+    final tip = center + sum * radius;
+    _arrow(canvas, center, tip, GameColors.fieldArrow, 3);
+    final tangent = Offset(-math.sin(fieldAngle), math.cos(fieldAngle));
+    _label(canvas, 'Σ', tip + tangent * 10, GameColors.gold);
     canvas.drawCircle(center, 2, Paint()..color = GameColors.cream);
   }
 
-  void _label(Canvas canvas, String value, Offset p, Color color) {
-    final text = TextPainter(
-      text: TextSpan(
-        text: value,
-        style: TextStyle(
-          fontSize: 10,
-          color: color,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    text.paint(canvas, p - Offset(text.width / 2, text.height / 2));
-  }
-
   @override
-  bool shouldRepaint(covariant _VectorPainter old) =>
-      x != old.x || y != old.y || xName != old.xName || yName != old.yName;
+  bool shouldRepaint(covariant PhaseFieldPainter old) =>
+      fieldAngle != old.fieldAngle;
 }
 
-class _CurrentBar extends CustomPainter {
-  const _CurrentBar(this.value, this.color);
-  final double value;
-  final Color color;
+class PhaseSinusoidsPainter extends CustomPainter {
+  const PhaseSinusoidsPainter(this.fieldAngle);
+  final double fieldAngle;
+  double get cursorAngle => fieldAngle % (2 * math.pi);
   @override
   void paint(Canvas canvas, Size size) {
-    final center = size.width / 2;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(3)),
-      Paint()..color = color.withValues(alpha: .13),
+    final rect = Rect.fromLTRB(
+      5,
+      3,
+      math.max(6, size.width - 6),
+      math.max(4, size.height - 12),
     );
-    canvas.drawRect(
-      Rect.fromLTRB(
-        math.min(center, center + value * center),
-        1,
-        math.max(center, center + value * center),
-        size.height - 1,
-      ),
-      Paint()..color = color,
-    );
+    final mid = rect.center.dy;
+    final amplitude = rect.height * .43;
+    for (final level in [-1, 0, 1]) {
+      final y = mid - level * amplitude;
+      canvas.drawLine(
+        Offset(rect.left, y),
+        Offset(rect.right, y),
+        Paint()
+          ..color = GameColors.line.withValues(alpha: .55)
+          ..strokeWidth = .7,
+      );
+    }
+    for (var phase = 0; phase < 3; phase++) {
+      final path = Path();
+      for (var step = 0; step <= 120; step++) {
+        final angle = step * 2 * math.pi / 120;
+        final point = Offset(
+          rect.left + rect.width * step / 120,
+          mid - math.cos(angle - phase * 2 * math.pi / 3) * amplitude,
+        );
+        if (step == 0) {
+          path.moveTo(point.dx, point.dy);
+        } else {
+          path.lineTo(point.dx, point.dy);
+        }
+      }
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = _phaseColors[phase]
+          ..strokeWidth = 1.6
+          ..style = PaintingStyle.stroke,
+      );
+    }
+    final cursorX = rect.left + rect.width * cursorAngle / (2 * math.pi);
     canvas.drawLine(
-      Offset(center, -2),
-      Offset(center, size.height + 2),
-      Paint()..color = GameColors.line,
+      Offset(cursorX, rect.top),
+      Offset(cursorX, rect.bottom),
+      Paint()
+        ..color = GameColors.cream.withValues(alpha: .7)
+        ..strokeWidth = 1,
     );
+    for (var i = 0; i < 3; i++) {
+      canvas.drawCircle(
+        Offset(
+          cursorX,
+          mid - math.cos(cursorAngle - i * 2 * math.pi / 3) * amplitude,
+        ),
+        2.6,
+        Paint()..color = _phaseColors[i],
+      );
+    }
+    for (var i = 0; i < 3; i++) {
+      _label(
+        canvas,
+        '${i * 180}°',
+        Offset(rect.left + rect.width * i / 2, rect.bottom + 7),
+        GameColors.muted,
+        size: 7,
+      );
+    }
   }
 
   @override
-  bool shouldRepaint(covariant _CurrentBar old) =>
-      value != old.value || color != old.color;
+  bool shouldRepaint(covariant PhaseSinusoidsPainter old) =>
+      fieldAngle != old.fieldAngle;
 }
