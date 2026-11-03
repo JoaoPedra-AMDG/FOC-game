@@ -50,7 +50,7 @@ void main() {
         expect(find.byType(KartTrack), findsNothing);
         expect(find.byType(FieldCurrentHud), findsOneWidget);
         expect(find.byKey(const Key('phase-field-diagram')), findsOneWidget);
-        expect(find.byKey(const Key('phase-sinusoids')), findsOneWidget);
+        expect(find.byKey(const Key('phase-current-history')), findsOneWidget);
         final motor = find.byKey(const Key('motor-control'));
         expect(tester.getSize(motor).height, greaterThan(160));
         await tester.tapAt(tester.getCenter(motor) + const Offset(75, 0));
@@ -110,14 +110,6 @@ void main() {
         ).fold(Offset.zero, (a, b) => a + b);
         expect(sum.dx, closeTo(math.cos(angle), 1e-12));
         expect(sum.dy, closeTo(math.sin(angle), 1e-12));
-        final cursor = PhaseSinusoidsPainter(angle).cursorAngle;
-        expect(cursor, inInclusiveRange(0, 2 * math.pi));
-        for (var phase = 0; phase < 3; phase++) {
-          expect(
-            math.cos(cursor - phase * 2 * math.pi / 3),
-            closeTo(command.phases[phase], 1e-12),
-          );
-        }
       }
     },
   );

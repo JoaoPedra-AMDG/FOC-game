@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../game/foc_transform.dart';
+import '../game/current_history.dart';
 import '../theme/game_theme.dart';
 import 'motor_painter.dart';
 
@@ -31,9 +32,11 @@ class FieldCurrentHud extends StatelessWidget {
     required this.fieldAngle,
     this.sensorless = false,
     this.rpm = 0,
+    this.history,
   });
   final double rotorAngle, fieldAngle, rpm;
   final bool sensorless;
+  final CurrentHistory? history;
   @override
   Widget build(BuildContext context) {
     final command = gameCurrentCommand(rotorAngle, fieldAngle);
@@ -90,7 +93,7 @@ class FieldCurrentHud extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    'THREE PHASE SINUSOIDS',
+                    'PHASE CURRENTS vs TIME',
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
                   ),
                 ),
@@ -98,10 +101,10 @@ class FieldCurrentHud extends StatelessWidget {
                 Expanded(
                   child: Semantics(
                     label:
-                        'Three sinusoidal phase current commands over 0 to 360 degrees of field angle. The cursor and dots mark the current commands.',
+                        'Recorded phase A, B and C current commands over the last three seconds of game time, in amperes.',
                     child: CustomPaint(
-                      key: const Key('phase-sinusoids'),
-                      painter: PhaseSinusoidsPainter(fieldAngle),
+                      key: const Key('phase-current-history'),
+                      painter: PhaseCurrentTimePainter(history),
                       child: const SizedBox.expand(),
                     ),
                   ),
@@ -146,7 +149,7 @@ class FieldCurrentHud extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    '1 A peak · field angle, not time',
+                    'A · 3 s rolling command history',
                     style: TextStyle(fontSize: 8, color: GameColors.muted),
                   ),
                 ),
@@ -278,16 +281,20 @@ class PhaseFieldPainter extends CustomPainter {
       fieldAngle != old.fieldAngle;
 }
 
-class PhaseSinusoidsPainter extends CustomPainter {
-  const PhaseSinusoidsPainter(this.fieldAngle);
-  final double fieldAngle;
-  double get cursorAngle => fieldAngle % (2 * math.pi);
+class PhaseCurrentTimePainter extends CustomPainter {
+  PhaseCurrentTimePainter(this.history) : revision = history?.revision ?? 0;
+  final CurrentHistory? history;
+  final int revision;
+  double get startTime =>
+      math.max(0, (history?.time ?? 0) - CurrentHistory.windowSeconds);
+  double get endTime => startTime + CurrentHistory.windowSeconds;
+
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Rect.fromLTRB(
-      5,
+      16,
       3,
-      math.max(6, size.width - 6),
+      math.max(17, size.width - 5),
       math.max(4, size.height - 12),
     );
     final mid = rect.center.dy;
@@ -301,19 +308,31 @@ class PhaseSinusoidsPainter extends CustomPainter {
           ..color = GameColors.line.withValues(alpha: .55)
           ..strokeWidth = .7,
       );
+      _label(
+        canvas,
+        level > 0 ? '+1' : '$level',
+        Offset(6, y),
+        GameColors.muted,
+        size: 7,
+      );
     }
+    final samples = history?.samples ?? const <CurrentSample>[];
+    canvas.save();
+    canvas.clipRect(rect);
     for (var phase = 0; phase < 3; phase++) {
       final path = Path();
-      for (var step = 0; step <= 120; step++) {
-        final angle = step * 2 * math.pi / 120;
-        final point = Offset(
-          rect.left + rect.width * step / 120,
-          mid - math.cos(angle - phase * 2 * math.pi / 3) * amplitude,
-        );
-        if (step == 0) {
-          path.moveTo(point.dx, point.dy);
+      for (var i = 0; i < samples.length; i++) {
+        final sample = samples[i];
+        final x =
+            rect.left +
+            rect.width *
+                (sample.time - startTime) /
+                CurrentHistory.windowSeconds;
+        final y = mid - sample.phases[phase] * amplitude;
+        if (i == 0) {
+          path.moveTo(x, y);
         } else {
-          path.lineTo(point.dx, point.dy);
+          path.lineTo(x, y);
         }
       }
       canvas.drawPath(
@@ -323,29 +342,24 @@ class PhaseSinusoidsPainter extends CustomPainter {
           ..strokeWidth = 1.6
           ..style = PaintingStyle.stroke,
       );
+      if (samples.isNotEmpty) {
+        final last = samples.last;
+        final x =
+            rect.left +
+            rect.width * (last.time - startTime) / CurrentHistory.windowSeconds;
+        canvas.drawCircle(
+          Offset(x, mid - last.phases[phase] * amplitude),
+          2.3,
+          Paint()..color = _phaseColors[phase],
+        );
+      }
     }
-    final cursorX = rect.left + rect.width * cursorAngle / (2 * math.pi);
-    canvas.drawLine(
-      Offset(cursorX, rect.top),
-      Offset(cursorX, rect.bottom),
-      Paint()
-        ..color = GameColors.cream.withValues(alpha: .7)
-        ..strokeWidth = 1,
-    );
+    canvas.restore();
     for (var i = 0; i < 3; i++) {
-      canvas.drawCircle(
-        Offset(
-          cursorX,
-          mid - math.cos(cursorAngle - i * 2 * math.pi / 3) * amplitude,
-        ),
-        2.6,
-        Paint()..color = _phaseColors[i],
-      );
-    }
-    for (var i = 0; i < 3; i++) {
+      final t = startTime + CurrentHistory.windowSeconds * i / 2;
       _label(
         canvas,
-        '${i * 180}°',
+        '${t.toStringAsFixed(1)}s',
         Offset(rect.left + rect.width * i / 2, rect.bottom + 7),
         GameColors.muted,
         size: 7,
@@ -354,6 +368,6 @@ class PhaseSinusoidsPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant PhaseSinusoidsPainter old) =>
-      fieldAngle != old.fieldAngle;
+  bool shouldRepaint(covariant PhaseCurrentTimePainter old) =>
+      revision != old.revision;
 }

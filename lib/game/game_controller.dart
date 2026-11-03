@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 
 import '../config/game_physics_config.dart';
 import '../physics/motor_simulation.dart';
+import 'current_history.dart';
 
 enum GamePhase { home, countdown, playing, results }
 
@@ -17,6 +18,7 @@ class GameController extends ChangeNotifier {
   Duration? _lastTick;
 
   MotorSimulation motor = MotorSimulation();
+  final currentHistory = CurrentHistory();
   GamePhase phase = GamePhase.home;
   bool sensorlessMode = false;
   double countdownLeft = GamePhysicsConfig.countdownSeconds;
@@ -42,6 +44,7 @@ class GameController extends ChangeNotifier {
     trackDistance = 0;
     _positiveTorqueArea = 0;
     _playSeconds = 0;
+    currentHistory.reset(motor.fieldAngle);
     _lastTick = null;
     _ticker.start();
     notifyListeners();
@@ -50,6 +53,7 @@ class GameController extends ChangeNotifier {
   void setFieldAngle(double angle) {
     if (phase != GamePhase.playing && phase != GamePhase.countdown) return;
     motor.fieldAngle = MotorSimulation.wrapAngle(angle);
+    currentHistory.record(_playSeconds, motor.fieldAngle);
     notifyListeners();
   }
 
@@ -89,6 +93,7 @@ class GameController extends ChangeNotifier {
       maxAbsoluteRpm = math.max(maxAbsoluteRpm, motor.rpm.abs());
       _positiveTorqueArea += math.max(0, motor.normalizedTorque) * dt;
       _playSeconds += dt;
+      currentHistory.record(_playSeconds, motor.fieldAngle);
       // Presentation-only distance. Reverse RPM moves the kart backwards.
       trackDistance += motor.rpm / 60 * dt * 110;
       if (timeLeft == 0) {

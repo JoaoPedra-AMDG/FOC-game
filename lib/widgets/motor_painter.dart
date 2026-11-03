@@ -263,51 +263,27 @@ class MotorPainter extends CustomPainter {
   // The translucent magnet is the commanded STATOR field. It follows only
   // fieldAngle and never reveals the actual rotor in sensorless mode.
   void _paintStatorPoles(Canvas canvas, Offset center, double radius) {
+    // Clip the blurred paint itself to the stator annulus. No colour can
+    // spill onto the rotor / air-gap interior, even with the blur filter.
+    final ring =
+        Path()
+          ..fillType = PathFillType.evenOdd
+          ..addOval(Rect.fromCircle(center: center, radius: radius * .99))
+          ..addOval(Rect.fromCircle(center: center, radius: radius * .66));
     canvas.save();
-    canvas.translate(center.dx, center.dy);
-    canvas.rotate(fieldAngle);
-    final shadow = RRect.fromRectAndRadius(
-      Rect.fromLTRB(-radius * .67, -radius * .15, radius * .67, radius * .15),
-      Radius.circular(radius * .10),
-    );
-    canvas.save();
-    canvas.clipRRect(shadow);
-    canvas.drawRect(
-      Rect.fromLTRB(0, -radius * .15, radius * .67, radius * .15),
-      Paint()..color = GameColors.northPole.withValues(alpha: .17),
-    );
-    canvas.drawRect(
-      Rect.fromLTRB(-radius * .67, -radius * .15, 0, radius * .15),
-      Paint()..color = GameColors.southPole.withValues(alpha: .17),
-    );
-    canvas.restore();
-    canvas.drawRRect(
-      shadow,
-      Paint()
-        ..color = GameColors.line.withValues(alpha: .25)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1,
-    );
-    canvas.restore();
+    canvas.clipPath(ring);
     for (final north in [true, false]) {
       final angle = fieldAngle + (north ? 0 : math.pi);
       final color = north ? GameColors.northPole : GameColors.southPole;
-      final position = _point(center, radius * .71, angle);
       canvas.drawCircle(
-        position,
-        radius * .13,
+        _point(center, radius * .83, angle),
+        radius * .22,
         Paint()
-          ..color = color.withValues(alpha: .18)
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, radius * .045),
-      );
-      _label(
-        canvas,
-        north ? 'Nₛ' : 'Sₛ',
-        position,
-        radius * .09,
-        color.withValues(alpha: .85),
+          ..color = color.withValues(alpha: .46)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, radius * .075),
       );
     }
+    canvas.restore();
   }
 
   Offset _point(Offset origin, double length, double angle) => Offset(

@@ -59,6 +59,7 @@ class GameScreen extends StatelessWidget {
                               fieldAngle: controller.motor.fieldAngle,
                               sensorless: controller.sensorlessMode,
                               rpm: controller.motor.rpm,
+                              history: controller.currentHistory,
                             ),
                           ),
                           const SizedBox(height: 9),
