@@ -39,7 +39,7 @@ GitHub Pages link above to share this version.
 
 ## Figure layout
 
-The play area gives the figure row and motor equal heights. Figure panels contain
+The play area gives the motor 60% and the figure row 40% of the available height. Figure panels contain
 only titles and axis labels, with the remaining area used for the vector sum
 and three-second current history. Per-phase readouts and legends are omitted. Accessible descriptions remain available to
 screen readers. The RPM, torque, angle and timer stay outside the figure blocks.

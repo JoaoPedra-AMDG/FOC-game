@@ -55,7 +55,7 @@ void main() {
         final figures = find.byKey(const Key('field-current-hud'));
         expect(
           tester.getSize(figures).height,
-          closeTo(tester.getSize(motor).height, .01),
+          closeTo(tester.getSize(motor).height * 2 / 3, .01),
         );
         expect(
           find.descendant(of: figures, matching: find.byType(Text)),
@@ -65,7 +65,7 @@ void main() {
         expect(find.text('Phase currents'), findsOneWidget);
         expect(
           tester.getSize(find.byKey(const Key('phase-field-diagram'))).height,
-          greaterThan(100),
+          greaterThan(tester.getSize(figures).height * .65),
         );
         await tester.tapAt(tester.getCenter(motor) + const Offset(75, 0));
         await tester.pump();

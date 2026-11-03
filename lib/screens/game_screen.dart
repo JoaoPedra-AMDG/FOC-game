@@ -62,6 +62,7 @@ class GameScreen extends StatelessWidget {
                               children: [
                                 Expanded(
                                   key: const Key('figures-half'),
+                                  flex: 2,
                                   child: FieldCurrentHud(
                                     rotorAngle: controller.motor.rotorAngle,
                                     fieldAngle: controller.motor.fieldAngle,
@@ -73,6 +74,7 @@ class GameScreen extends StatelessWidget {
                                 const SizedBox(height: 10),
                                 Expanded(
                                   key: const Key('motor-half'),
+                                  flex: 3,
                                   child: _MotorControl(controller: controller),
                                 ),
                               ],
