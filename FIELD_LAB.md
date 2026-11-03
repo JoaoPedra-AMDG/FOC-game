@@ -36,3 +36,10 @@ main, Lofi, arena and simulation versions. The deployment workflow is synchroniz
 across the five branches so a push to any game branch preserves all public URLs.
 The original private Sites preview is a separate earlier preview; use the public
 GitHub Pages link above to share this version.
+
+## Figure layout
+
+The play area gives the figure row and motor equal heights. Figure panels contain
+no visible text or legends and use their full available area for the vector sum
+and three-second current history. Accessible descriptions remain available to
+screen readers. The RPM, torque, angle and timer stay outside the figure blocks.

@@ -52,12 +52,32 @@ void main() {
         expect(find.byKey(const Key('phase-field-diagram')), findsOneWidget);
         expect(find.byKey(const Key('phase-current-history')), findsOneWidget);
         final motor = find.byKey(const Key('motor-control'));
-        expect(tester.getSize(motor).height, greaterThan(160));
+        final figures = find.byKey(const Key('field-current-hud'));
+        expect(
+          tester.getSize(figures).height,
+          closeTo(tester.getSize(motor).height, .01),
+        );
+        expect(
+          find.descendant(of: figures, matching: find.byType(Text)),
+          findsNothing,
+        );
+        expect(
+          tester.getSize(find.byKey(const Key('phase-field-diagram'))).height,
+          greaterThan(100),
+        );
         await tester.tapAt(tester.getCenter(motor) + const Offset(75, 0));
         await tester.pump();
-        expect(find.text('1.00 A'), findsOneWidget);
-        expect(find.text('-0.50 A'), findsNWidgets(2));
-        expect(find.text('d 1.00  ·  q 0.00 A'), findsOneWidget);
+        final painter =
+            tester
+                    .widget<CustomPaint>(
+                      find.byKey(const Key('phase-field-diagram')),
+                    )
+                    .painter!
+                as PhaseFieldPainter;
+        expect(painter.fieldAngle, closeTo(0, .01));
+        expect(painter.command.a, closeTo(1, .01));
+        expect(painter.command.b, closeTo(-.5, .01));
+        expect(painter.command.c, closeTo(-.5, .01));
         expect(
           tester.getTopLeft(find.byKey(const Key('field-current-hud'))).dy,
           lessThan(tester.getTopLeft(motor).dy),
@@ -89,13 +109,23 @@ void main() {
       ),
     );
     await show(0, 18);
-    expect(find.text('PHASE FIELDS · Σ = I*'), findsOneWidget);
-    expect(find.text('α 1.00  ·  β 0.00 A'), findsOneWidget);
+    String description() =>
+        tester
+            .widget<Semantics>(find.byKey(const Key('phase-field-semantics')))
+            .properties
+            .label!;
+    expect(description(), contains('α 1.00 amperes, β 0.00 amperes'));
     await show(math.pi / 2, 18);
-    expect(find.text('α 1.00  ·  β 0.00 A'), findsOneWidget);
+    expect(description(), contains('α 1.00 amperes, β 0.00 amperes'));
     await show(math.pi / 2, 300);
-    expect(find.text('PHASE FIELDS · Σ = I*'), findsOneWidget);
-    expect(find.text('d 0.00  ·  q -1.00 A'), findsOneWidget);
+    expect(description(), contains('d 0.00 amperes, q -1.00 amperes'));
+    expect(
+      find.descendant(
+        of: find.byType(FieldCurrentHud),
+        matching: find.byType(Text),
+      ),
+      findsNothing,
+    );
     expect(tester.takeException(), isNull);
   });
 

@@ -18,7 +18,7 @@ class GameScreen extends StatelessWidget {
     body: SafeArea(
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 650),
+          constraints: const BoxConstraints(maxWidth: 1100),
           child: AnimatedBuilder(
             animation: controller,
             builder:
@@ -52,24 +52,31 @@ class GameScreen extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 5),
-                          SizedBox(
-                            height: compact ? 108 : 124,
-                            child: FieldCurrentHud(
-                              rotorAngle: controller.motor.rotorAngle,
-                              fieldAngle: controller.motor.fieldAngle,
-                              sensorless: controller.sensorlessMode,
-                              rpm: controller.motor.rpm,
-                              history: controller.currentHistory,
-                            ),
-                          ),
-                          const SizedBox(height: 9),
                           _SpeedReadout(
                             controller: controller,
                             compact: compact,
                           ),
                           const SizedBox(height: 8),
                           Expanded(
-                            child: _MotorControl(controller: controller),
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  key: const Key('figures-half'),
+                                  child: FieldCurrentHud(
+                                    rotorAngle: controller.motor.rotorAngle,
+                                    fieldAngle: controller.motor.fieldAngle,
+                                    sensorless: controller.sensorlessMode,
+                                    rpm: controller.motor.rpm,
+                                    history: controller.currentHistory,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Expanded(
+                                  key: const Key('motor-half'),
+                                  child: _MotorControl(controller: controller),
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(height: 7),
                           Text(

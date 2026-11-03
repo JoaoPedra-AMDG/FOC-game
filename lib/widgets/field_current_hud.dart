@@ -51,109 +51,29 @@ class FieldCurrentHud extends StatelessWidget {
       children: [
         Expanded(
           child: _panel(
-            Column(
-              children: [
-                const FittedBox(
-                  child: Text(
-                    'PHASE FIELDS · Σ = I*',
-                    key: Key('vector-frame-label'),
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
-                  ),
-                ),
-                Expanded(
-                  child: Semantics(
-                    label:
-                        'Phase A, B and C fields add to the gold resultant aligned with the control arrow. $xName ${_number(x)} amperes, $yName ${_number(y)} amperes.',
-                    child: CustomPaint(
-                      key: const Key('phase-field-diagram'),
-                      painter: PhaseFieldPainter(command, fieldAngle),
-                      child: const SizedBox.expand(),
-                    ),
-                  ),
-                ),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    '$xName ${_number(x)}  ·  $yName ${_number(y)} A',
-                    key: const Key('vector-components'),
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                ),
-              ],
+            Semantics(
+              key: const Key('phase-field-semantics'),
+              label:
+                  'Phase A, B and C fields add to the gold resultant aligned with the control arrow. $xName ${_number(x)} amperes, $yName ${_number(y)} amperes.',
+              child: CustomPaint(
+                key: const Key('phase-field-diagram'),
+                painter: PhaseFieldPainter(command, fieldAngle),
+                child: const SizedBox.expand(),
+              ),
             ),
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         Expanded(
           child: _panel(
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    'PHASE CURRENTS vs TIME',
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Expanded(
-                  child: Semantics(
-                    label:
-                        'Recorded phase A, B and C current commands over the last three seconds of game time, in amperes.',
-                    child: CustomPaint(
-                      key: const Key('phase-current-history'),
-                      painter: PhaseCurrentTimePainter(history),
-                      child: const SizedBox.expand(),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Row(
-                  children: List.generate(
-                    3,
-                    (i) => Expanded(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Column(
-                          children: [
-                            Text(
-                              ['A', 'B', 'C'][i],
-                              style: TextStyle(
-                                color: _phaseColors[i],
-                                fontSize: 9,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                            Text(
-                              '${_number(command.phases[i])} A',
-                              key: Key('phase-current-$i'),
-                              style: TextStyle(
-                                color: _phaseColors[i],
-                                fontSize: 10,
-                                fontWeight: FontWeight.w800,
-                                fontFeatures: const [
-                                  FontFeature.tabularFigures(),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                const FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    'A · 3 s rolling command history',
-                    style: TextStyle(fontSize: 8, color: GameColors.muted),
-                  ),
-                ),
-              ],
+            Semantics(
+              label:
+                  'Recorded phase A, B and C current commands over the last three seconds of game time, in amperes. Phase A ${_number(command.a)}, phase B ${_number(command.b)}, phase C ${_number(command.c)}.',
+              child: CustomPaint(
+                key: const Key('phase-current-history'),
+                painter: PhaseCurrentTimePainter(history),
+                child: const SizedBox.expand(),
+              ),
             ),
           ),
         ),
@@ -162,7 +82,7 @@ class FieldCurrentHud extends StatelessWidget {
   }
 
   Widget _panel(Widget child) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+    padding: const EdgeInsets.all(4),
     decoration: BoxDecoration(
       color: GameColors.panel,
       borderRadius: BorderRadius.circular(6),
@@ -170,27 +90,6 @@ class FieldCurrentHud extends StatelessWidget {
     ),
     child: child,
   );
-}
-
-void _label(
-  Canvas canvas,
-  String value,
-  Offset p,
-  Color color, {
-  double size = 9,
-}) {
-  final text = TextPainter(
-    text: TextSpan(
-      text: value,
-      style: TextStyle(
-        fontSize: size,
-        color: color,
-        fontWeight: FontWeight.w700,
-      ),
-    ),
-    textDirection: TextDirection.ltr,
-  )..layout();
-  text.paint(canvas, p - Offset(text.width / 2, text.height / 2));
 }
 
 void _arrow(
@@ -209,7 +108,7 @@ void _arrow(
         ..strokeCap = StrokeCap.round;
   canvas.drawLine(start, end, paint);
   final angle = math.atan2(delta.dy, delta.dx);
-  final head = math.min(5.0, delta.distance * .35);
+  final head = math.min(width * 3, delta.distance * .35);
   for (final sign in [-1, 1]) {
     canvas.drawLine(
       end,
@@ -228,7 +127,7 @@ class PhaseFieldPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = math.min(size.width * .33, size.height * .35);
+    final radius = math.min(size.width, size.height) * .46;
     canvas.drawCircle(
       center,
       radius,
@@ -246,12 +145,6 @@ class PhaseFieldPainter extends CustomPainter {
           ..color = _phaseColors[i].withValues(alpha: .25)
           ..strokeWidth = 1,
       );
-      _label(
-        canvas,
-        ['A', 'B', 'C'][i],
-        center + direction * (radius + 9),
-        _phaseColors[i],
-      );
     }
     // Faint head-to-tail segments expose the sum; solid arrows show each
     // phase's field from a common origin.
@@ -266,13 +159,23 @@ class PhaseFieldPainter extends CustomPainter {
           ..color = _phaseColors[i].withValues(alpha: .28)
           ..strokeWidth = 1,
       );
-      _arrow(canvas, center, center + fields[i] * radius, _phaseColors[i], 2);
+      _arrow(
+        canvas,
+        center,
+        center + fields[i] * radius,
+        _phaseColors[i],
+        math.max(2.0, radius * .02),
+      );
       sum = next;
     }
     final tip = center + sum * radius;
-    _arrow(canvas, center, tip, GameColors.fieldArrow, 3);
-    final tangent = Offset(-math.sin(fieldAngle), math.cos(fieldAngle));
-    _label(canvas, 'Σ', tip + tangent * 10, GameColors.gold);
+    _arrow(
+      canvas,
+      center,
+      tip,
+      GameColors.fieldArrow,
+      math.max(3.0, radius * .03),
+    );
     canvas.drawCircle(center, 2, Paint()..color = GameColors.cream);
   }
 
@@ -292,13 +195,13 @@ class PhaseCurrentTimePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Rect.fromLTRB(
-      16,
-      3,
-      math.max(17, size.width - 5),
-      math.max(4, size.height - 12),
+      4,
+      4,
+      math.max(5, size.width - 4),
+      math.max(5, size.height - 4),
     );
     final mid = rect.center.dy;
-    final amplitude = rect.height * .43;
+    final amplitude = rect.height * .46;
     for (final level in [-1, 0, 1]) {
       final y = mid - level * amplitude;
       canvas.drawLine(
@@ -308,12 +211,15 @@ class PhaseCurrentTimePainter extends CustomPainter {
           ..color = GameColors.line.withValues(alpha: .55)
           ..strokeWidth = .7,
       );
-      _label(
-        canvas,
-        level > 0 ? '+1' : '$level',
-        Offset(6, y),
-        GameColors.muted,
-        size: 7,
+    }
+    for (var i = 0; i <= 3; i++) {
+      final x = rect.left + rect.width * i / 3;
+      canvas.drawLine(
+        Offset(x, rect.top),
+        Offset(x, rect.bottom),
+        Paint()
+          ..color = GameColors.line.withValues(alpha: .30)
+          ..strokeWidth = .7,
       );
     }
     final samples = history?.samples ?? const <CurrentSample>[];
@@ -355,16 +261,6 @@ class PhaseCurrentTimePainter extends CustomPainter {
       }
     }
     canvas.restore();
-    for (var i = 0; i < 3; i++) {
-      final t = startTime + CurrentHistory.windowSeconds * i / 2;
-      _label(
-        canvas,
-        '${t.toStringAsFixed(1)}s',
-        Offset(rect.left + rect.width * i / 2, rect.bottom + 7),
-        GameColors.muted,
-        size: 7,
-      );
-    }
   }
 
   @override

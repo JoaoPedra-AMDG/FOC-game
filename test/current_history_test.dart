@@ -66,7 +66,7 @@ void main() {
     controller.setFieldAngle(0);
     await tester.pump();
     expect(controller.currentHistory.samples.last.a, 1);
-    expect(find.text('PHASE CURRENTS vs TIME'), findsOneWidget);
+    expect(find.byKey(const Key('phase-current-history')), findsOneWidget);
     expect(tester.takeException(), isNull);
     controller.start();
     expect(controller.currentHistory.time, 0);
