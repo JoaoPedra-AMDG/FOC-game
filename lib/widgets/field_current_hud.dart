@@ -51,6 +51,7 @@ class FieldCurrentHud extends StatelessWidget {
       children: [
         Expanded(
           child: _panel(
+            'Phase field vectors',
             Semantics(
               key: const Key('phase-field-semantics'),
               label:
@@ -66,6 +67,7 @@ class FieldCurrentHud extends StatelessWidget {
         const SizedBox(width: 8),
         Expanded(
           child: _panel(
+            'Phase currents',
             Semantics(
               label:
                   'Recorded phase A, B and C current commands over the last three seconds of game time, in amperes. Phase A ${_number(command.a)}, phase B ${_number(command.b)}, phase C ${_number(command.c)}.',
@@ -81,15 +83,52 @@ class FieldCurrentHud extends StatelessWidget {
     );
   }
 
-  Widget _panel(Widget child) => Container(
+  Widget _panel(String title, Widget child) => Container(
     padding: const EdgeInsets.all(4),
     decoration: BoxDecoration(
       color: GameColors.panel,
       borderRadius: BorderRadius.circular(6),
       border: Border.all(color: GameColors.line.withValues(alpha: .6)),
     ),
-    child: child,
+    child: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 4, bottom: 4),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              title,
+              maxLines: 1,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+            ),
+          ),
+        ),
+        Expanded(child: child),
+      ],
+    ),
   );
+}
+
+void _axisLabel(
+  Canvas canvas,
+  String value,
+  Offset center, {
+  Color color = GameColors.muted,
+  double size = 10,
+}) {
+  final painter = TextPainter(
+    text: TextSpan(
+      text: value,
+      style: TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: size,
+        color: color,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+    textDirection: TextDirection.ltr,
+  )..layout();
+  painter.paint(canvas, center - Offset(painter.width / 2, painter.height / 2));
 }
 
 void _arrow(
@@ -127,7 +166,7 @@ class PhaseFieldPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = math.min(size.width, size.height) * .46;
+    final radius = math.max(1.0, (math.min(size.width, size.height) - 28) / 2);
     canvas.drawCircle(
       center,
       radius,
@@ -144,6 +183,16 @@ class PhaseFieldPainter extends CustomPainter {
         Paint()
           ..color = _phaseColors[i].withValues(alpha: .25)
           ..strokeWidth = 1,
+      );
+    }
+    for (var i = 0; i < 3; i++) {
+      final angle = i * 2 * math.pi / 3;
+      _axisLabel(
+        canvas,
+        ['A', 'B', 'C'][i],
+        center + Offset(math.cos(angle), math.sin(angle)) * (radius + 10),
+        color: _phaseColors[i],
+        size: 11,
       );
     }
     // Faint head-to-tail segments expose the sum; solid arrows show each
@@ -195,10 +244,10 @@ class PhaseCurrentTimePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Rect.fromLTRB(
-      4,
-      4,
-      math.max(5, size.width - 4),
-      math.max(5, size.height - 4),
+      38,
+      8,
+      math.max(39, size.width - 18),
+      math.max(9, size.height - 31),
     );
     final mid = rect.center.dy;
     final amplitude = rect.height * .46;
@@ -222,6 +271,34 @@ class PhaseCurrentTimePainter extends CustomPainter {
           ..strokeWidth = .7,
       );
     }
+    for (final level in [-1, 0, 1]) {
+      _axisLabel(
+        canvas,
+        '$level',
+        Offset(rect.left - 9, mid - level * amplitude),
+        size: 9,
+      );
+    }
+    for (var i = 0; i < 3; i++) {
+      final t = startTime + CurrentHistory.windowSeconds * i / 2;
+      _axisLabel(
+        canvas,
+        t.toStringAsFixed(1),
+        Offset(rect.left + rect.width * i / 2, rect.bottom + 9),
+        size: 9,
+      );
+    }
+    _axisLabel(
+      canvas,
+      'Time (s)',
+      Offset(rect.center.dx, size.height - 6),
+      size: 10,
+    );
+    canvas.save();
+    canvas.translate(9, rect.center.dy);
+    canvas.rotate(-math.pi / 2);
+    _axisLabel(canvas, 'Current (A)', Offset.zero, size: 10);
+    canvas.restore();
     final samples = history?.samples ?? const <CurrentSample>[];
     canvas.save();
     canvas.clipRect(rect);

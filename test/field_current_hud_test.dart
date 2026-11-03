@@ -59,8 +59,10 @@ void main() {
         );
         expect(
           find.descendant(of: figures, matching: find.byType(Text)),
-          findsNothing,
+          findsNWidgets(2),
         );
+        expect(find.text('Phase field vectors'), findsOneWidget);
+        expect(find.text('Phase currents'), findsOneWidget);
         expect(
           tester.getSize(find.byKey(const Key('phase-field-diagram'))).height,
           greaterThan(100),
@@ -124,7 +126,7 @@ void main() {
         of: find.byType(FieldCurrentHud),
         matching: find.byType(Text),
       ),
-      findsNothing,
+      findsNWidgets(2),
     );
     expect(tester.takeException(), isNull);
   });
